@@ -1,23 +1,19 @@
 import java.rmi.*;
-import java.rmi.server.*;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.net.*;
-import java.io.*;
 
 public class OttawaServer {
 	public static void main(String args[]) {
 		try {
 
 			startRegistry(8081);
-			ServerImplimentation exportedObj = new ServerImplimentation();
+			ServerImplimentationOttawa exportedObj = new ServerImplimentationOttawa();
 			Naming.rebind("rmi://localhost:" + 8081 + "/ottawa", exportedObj);
 			System.out.println("Hello Server ready.");
 		} catch (Exception re) {
 			System.out.println("Exception in HelloServer.main: " + re);
 		}
 	}
-
 	private static void startRegistry(int RMIPortNum) throws RemoteException {
 		try {
 			Registry registry = LocateRegistry.getRegistry(RMIPortNum);

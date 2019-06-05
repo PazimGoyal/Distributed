@@ -1,16 +1,13 @@
 import java.rmi.*;
-import java.rmi.server.*;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.net.*;
-import java.io.*;
 
 public class MontrealServer {
 	public static void main(String args[]) {
 		try {
 
 			startRegistry(8082);
-			ServerImplimentation exportedObj = new ServerImplimentation();
+			ServerImplimentationMontreal exportedObj = new ServerImplimentationMontreal();
 			Naming.rebind("rmi://localhost:" + 8082 + "/montreal", exportedObj);
 			System.out.println("Hello Server ready.");
 		} catch (Exception re) {
