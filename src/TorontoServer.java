@@ -3,11 +3,12 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 
 public class TorontoServer {
+   static ServerImplimentationToronto exportedObj;
     public static void main(String args[]) {
         try {
 
             startRegistry(8080);
-            ServerImplimentationToronto exportedObj = new ServerImplimentationToronto();
+            exportedObj = new ServerImplimentationToronto();
             Naming.rebind("rmi://localhost:" + 8080 + "/toronto", exportedObj);
             System.out.println("Hello Server ready.");
         } catch (Exception re) {

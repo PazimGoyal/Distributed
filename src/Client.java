@@ -57,14 +57,15 @@ public class Client {
                 type = getType();
                 uniqueid = getEventID();
                 booking = getBooking();
-                interFace.addEvent(uniqueid, type, booking);
+                String reply = interFace.addEvent(uniqueid, type, booking);
+                System.out.println(reply);
                 System.out.println(interFace.getHashMap());
                 break;
 
             case 2:
                 type = getType();
                 uniqueid = getEventID();
-                String reply = interFace.removeEvent(uniqueid, type);
+                reply = interFace.removeEvent(uniqueid, type);
                 System.out.println(interFace.getHashMap());
                 System.out.println(reply);
                 break;
@@ -72,8 +73,6 @@ public class Client {
             case 3:
                 type = getType();
                 System.out.println(interFace.listEventAvailability(type));
-
-
                 break;
             case 4:
                 if (!idtaken)

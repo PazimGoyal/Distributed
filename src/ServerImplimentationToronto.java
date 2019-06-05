@@ -7,6 +7,7 @@ import java.util.Hashtable;
 public class ServerImplimentationToronto extends UnicastRemoteObject implements ManagerInterface {
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
     public static HashMap<String, HashSet<String>> customerBooking = new HashMap<>();
+    public static String name="TOR";
 
     public ServerImplimentationToronto() throws RemoteException {
 
@@ -102,27 +103,36 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
 
     }
 
-    public void addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
-        boolean exists = hashMap.containsKey(eventType);
-        HashMap<String, Integer> temp;
-        if (exists) {
-            temp = hashMap.get(eventType);
-            if (temp.containsKey(eventID)) {
-                temp.remove(eventID);
-                temp.put(eventID, bookingCapacity);
-            } else {
-                temp.put(eventID, bookingCapacity);
+    public String  addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
+        if(checkEventCity(eventID)) {
 
+            boolean exists = hashMap.containsKey(eventType);
+            HashMap<String, Integer> temp;
+            if (exists) {
+                temp = hashMap.get(eventType);
+                if (temp.containsKey(eventID)) {
+                    temp.remove(eventID);
+                    temp.put(eventID, bookingCapacity);
+                } else {
+                    temp.put(eventID, bookingCapacity);
+
+                }
+
+            } else {
+
+                temp = new HashMap<>();
+                temp.put(eventID, bookingCapacity);
+                hashMap.put(eventType, temp);
             }
 
-        } else {
+            return "SUCCESSFULL";
 
-            temp = new HashMap<>();
-            temp.put(eventID, bookingCapacity);
-            hashMap.put(eventType, temp);
+        }else{
+
+            return "MANAGER CANNOT ADD EVENT OF ANOTHER CITY";
+
+
         }
-
-
     }
 
     @Override
@@ -142,4 +152,14 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
 
         return reply;
     }
+
+    public boolean checkEventCity(String id){
+        String city=id.substring(0,3).toUpperCase();
+        if(city.equals(name)){
+            return true;
+        }
+        else
+            return false;
+    }
+
 }
