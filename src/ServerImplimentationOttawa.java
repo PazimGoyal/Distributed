@@ -23,15 +23,16 @@ public class ServerImplimentationOttawa extends UnicastRemoteObject implements M
     }
 
 
-    public boolean bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
-        return false;
+    public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
+        return "";
     }
 
     public String removeEvent(String eventID, String eventType) throws RemoteException {
         return "";
     }
 
-    public void listEventAvailability(String eventType) throws RemoteException {
+    public String listEventAvailability(String eventType) throws RemoteException {
+        return "";
 
     }
 

@@ -34,7 +34,6 @@ public class Client {
                         System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3.List Bookings");
                         int ans = obj.nextInt();
                         options(ans + 3);
-
                     }
                 } else if (opt.equals("2") || opt == "2") {
                     break;
@@ -56,7 +55,7 @@ public class Client {
                 uniqueid = getEventID();
                 booking = getBooking();
                 interFace.addEvent(uniqueid, type, booking);
-                interFace.getHashMap();
+                System.out.println(interFace.getHashMap());
                 break;
 
             case 2:
@@ -65,10 +64,23 @@ public class Client {
                 String reply = interFace.removeEvent(uniqueid, type);
                 System.out.println(interFace.getHashMap());
                 System.out.println(reply);
+                break;
+
+            case 3:
+                type = getType();
+                System.out.println(interFace.listEventAvailability(type));
 
 
                 break;
             case 4:
+                id = getCustomerID();
+                type = getType();
+                uniqueid = getEventID();
+                reply = interFace.bookEvent(id, uniqueid, type);
+                if (reply.equals("Successfully Booked")) {
+                    hashMap.put(id, uniqueid);
+                }
+                System.out.println(reply);
 
 
                 break;
@@ -100,7 +112,7 @@ public class Client {
         System.out.println("ENTER EVENT ID e.g MTLA100919 :- ");
         obj.nextLine();
         uniqueid = obj.nextLine();
-        return uniqueid;
+        return uniqueid.toUpperCase();
     }
 
     public static String getCustomerID() {

@@ -22,16 +22,16 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
     }
 
 
-    public boolean bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
-        return false;
+    public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
+        return "";
     }
 
     public String removeEvent(String eventID, String eventType) throws RemoteException {
         return "";
     }
 
-    public void listEventAvailability(String eventType) throws RemoteException {
-
+    public String listEventAvailability(String eventType) throws RemoteException {
+return "";
     }
 
     public void addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
