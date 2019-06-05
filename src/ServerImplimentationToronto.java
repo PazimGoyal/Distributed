@@ -1,11 +1,12 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 public class ServerImplimentationToronto extends UnicastRemoteObject implements ManagerInterface {
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
-    public static HashMap<String, String> customerBooking = new HashMap<>();
+    public static HashMap<String, HashSet<String>> customerBooking = new HashMap<>();
 
     public ServerImplimentationToronto() throws RemoteException {
 
@@ -20,7 +21,7 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
 
     public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
         String reply = "";
-        if (customerBooking.containsKey(customerID) && (customerBooking.get(customerID).equals(eventID))) {
+        if (customerBooking.containsKey(customerID) && (customerBooking.get(customerID).contains(eventID))) {
             reply = "Event Already Booked for Customer";
         } else {
             HashMap<String, Integer> temp;
@@ -29,14 +30,21 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
                 temp = hashMap.get(eventType);
                 if (temp.containsKey(eventID)) {
                     temp.put(eventID, temp.get(eventID) - 1);
-                    customerBooking.put(customerID, eventID);
+                    if (customerBooking.containsKey(customerID))
+                        customerBooking.get(customerID).add(eventID);
+                    else {
+                        customerBooking.put(customerID, new HashSet<>());
+                        customerBooking.get(customerID).add(eventID);
+                    }
                     reply = "Successfully Booked";
                 } else {
+
                     reply = "No SUCH EVENT ID FOUND";
                 }
 
             }
         }
+        System.out.println(customerBooking);
         return reply;
 
     }

@@ -11,6 +11,7 @@ public class Client {
     static ManagerInterface MtlInterface;
     static ManagerInterface OtwInterface;
     static String id = "";
+    static boolean idtaken = false;
     static Scanner obj;
     static ManagerInterface interFace;
 
@@ -27,10 +28,12 @@ public class Client {
                     String[] vals = split(id);
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
+                        idtaken = false;
                         System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event\n4. Book Event\n5.Cancel Event\n6.List Bookings");
                         int ans = obj.nextInt();
                         options(ans);
                     } else {
+                        idtaken = true;
                         System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3.List Bookings");
                         int ans = obj.nextInt();
                         options(ans + 3);
@@ -73,7 +76,8 @@ public class Client {
 
                 break;
             case 4:
-                id = getCustomerID();
+                if (!idtaken)
+                    id = getCustomerID();
                 type = getType();
                 uniqueid = getEventID();
                 reply = interFace.bookEvent(id, uniqueid, type);
