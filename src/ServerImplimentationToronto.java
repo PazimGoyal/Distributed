@@ -21,8 +21,36 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
 		hashMap.put("Confrence", hashMap1);
 	}
 
-	public int add(int a, int b) throws RemoteException {
-		return a + b;
+
+	public boolean bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
+		return false;
+	}
+
+	public String removeEvent(String eventID, String eventType) throws RemoteException {
+		HashMap<String, Integer> temp;
+		String reply="";
+
+		boolean exists = hashMap.containsKey(eventType);
+		if (exists) {
+			temp = hashMap.get(eventType);
+			if (temp.containsKey(eventID)) {
+				temp.remove(eventID);
+				reply="EVENT ID REMOVED SUCCESSFULLY";
+			} else {
+				reply="No SUCH EVENT ID FOUND";
+			}
+
+			}
+		else{
+			reply="NO SUCH EVENT TYPE FOUND";
+		}
+		return reply;
+
+
+		}
+
+	public void listEventAvailability(String eventType) throws RemoteException {
+
 	}
 
 	public void addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
