@@ -12,6 +12,7 @@ public class Client {
 	static String cm = "";
 	static int uid = 0;
 	static Scanner obj;
+	static ManagerInterface interFace;
 
 	public static void main(String args[]) {
 		obj = new Scanner(System.in);
@@ -24,25 +25,16 @@ public class Client {
 				String id=obj.nextLine();
 				String [] vals=split(id);
 
-				ManagerInterface interFace= gettype(vals[0]);
+				 interFace= gettype(vals[0]);
 				if(vals[1]=="M"||vals[1].equals("M")) {
 					System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event");
+					int ans=obj.nextInt();
+					options(ans);
 				}
 				else {
 					System.out.println("SELECT 1 to 3\n1. Add Event\n2.Delete");
 				}
 				int ans=obj.nextInt();
-				try {
-					interFace.addEvent("TOR1234", "Confrence", 4);
-					interFace.addEvent("MTL1234", "Trade Show", 8);
-					interFace.addEvent("OTW1234", "Trade Show", 2);
-					interFace.addEvent("TOR1234", "Seminar", 8);
-					interFace.getHashMap();
-
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}else if (opt.equals("2")||opt=="2") {
 				break;
 			}
@@ -51,12 +43,11 @@ public class Client {
 	}
 	
 	public static void options(int ans) {
-		String type,uniqueid;
+		String type="",uniqueid="";
 		int booking;
 		switch (ans) {
 		case 1:
-			System.out.println("Select Event type :- ");
-
+			System.out.println("Select Event type :- \n1. Seminar\n2.Trade Show\n3.Confrence");
 			int typ=obj.nextInt();
 			if(typ==1)
 				type="SEMINAR";
@@ -69,15 +60,22 @@ public class Client {
 				options(1);
 			}
 			System.out.println("ENTER EVENT ID e.g MTLA100919 :- ");
+			obj.nextLine();
 			uniqueid=obj.nextLine();
 			System.out.println("Enter Capacity");
-
-
-
-
-
+			booking=obj.nextInt();
+			try {
+				interFace.addEvent(uniqueid,type,booking);
+				interFace.getHashMap();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 
+			case 2:
+
+				break;
 		default:
 			break;
 		}

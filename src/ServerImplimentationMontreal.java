@@ -15,7 +15,6 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
 		hashMap1.put("MTLA3234",5);
 		hashMap1.put("MTLM5934",8);
 		hashMap1.put("MTLE7254",1);
-
 		hashMap.put("Confrence",hashMap1);
 		hashMap.put("Trade Show", hashMap1);
 		hashMap.put("Seminar", hashMap1);
@@ -37,11 +36,8 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
 				temp.put(eventID,  bookingCapacity);
 			} else {
 				temp.put(eventID,  bookingCapacity);
-
 			}
-
 		} else {
-
 			temp = new HashMap<>();
 			temp.put(eventID, bookingCapacity);
 			hashMap.put(eventType, temp);
@@ -52,7 +48,7 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
 
 	@Override
 	public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
-		System.out.println( hashMap);
+		System.out.println( hashMap.values());
 		return hashMap;
 	}
 }
