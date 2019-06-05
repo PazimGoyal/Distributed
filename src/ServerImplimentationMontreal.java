@@ -31,7 +31,7 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
     }
 
     public String listEventAvailability(String eventType) throws RemoteException {
-return "";
+        return "";
     }
 
     public void addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
@@ -59,5 +59,10 @@ return "";
     public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
         System.out.println(hashMap.values());
         return hashMap;
+    }
+
+    @Override
+    public String getBookingSchedule(String customerID) throws RemoteException {
+        return "";
     }
 }

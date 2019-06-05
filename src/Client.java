@@ -29,7 +29,7 @@ public class Client {
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
                         idtaken = false;
-                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event\n4. Book Event\n5.Cancel Event\n6.List Bookings");
+                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event\n4. Book Event\n5.EventList Bookings\n6.Cancel ");
                         int ans = obj.nextInt();
                         options(ans);
                     } else {
@@ -85,9 +85,18 @@ public class Client {
                     hashMap.put(id, uniqueid);
                 }
                 System.out.println(reply);
+                break;
+            case 5:
 
+                if (!idtaken)
+                    id = getCustomerID();
+                reply = interFace.getBookingSchedule(id);
+                System.out.println(reply);
+                break;
+            case 6:
 
                 break;
+
             default:
                 break;
         }
@@ -148,30 +157,32 @@ public class Client {
     public static void TorServer() throws Exception {
         String registryURL = "rmi://localhost:" + 8080 + "/toronto";
         TorInterface = (ManagerInterface) Naming.lookup(registryURL);
-        System.out.println("Lookup completed ");
+        System.out.println("Toronto Server Started");
 
     }
 
     public static void MtlServer() throws Exception {
         String registryURL = "rmi://localhost:" + 8082 + "/montreal";
         MtlInterface = (ManagerInterface) Naming.lookup(registryURL);
-        System.out.println("Lookup completed ");
+        System.out.println("Montreal Server Started");
     }
 
     public static void OtwServer() throws Exception {
         String registryURL = "rmi://localhost:" + 8081 + "/ottawa";
         OtwInterface = (ManagerInterface) Naming.lookup(registryURL);
-        System.out.println("Lookup completed ");
+        System.out.println("Ottawa Server Started");
     }
 
     public static String[] split(String id) {
         String vals[] = new String[3];
 
-        if (id.length() > 0) {
+        if (0 < id.length() && id.length() < 9) {
             vals[0] = id.substring(0, 3).toUpperCase();
             vals[1] = id.substring(3, 4).toUpperCase();
             System.out.println(vals[1]);
             vals[2] = id.substring(4, 8);
+        } else {
+            System.out.println("Invalid Id");
         }
         return vals;
 

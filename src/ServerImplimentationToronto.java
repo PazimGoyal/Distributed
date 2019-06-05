@@ -16,6 +16,15 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
         hashMap.put("TRADE SHOW", new HashMap<>());
         hashMap.put("SEMINAR", new HashMap<>());
         hashMap.put("CONFRENCE", new HashMap<>());
+        hashMap.get("CONFRENCE").put("TORA123412", 5);
+        hashMap.get("CONFRENCE").put("TORA123412", 5);
+        hashMap.get("SEMINAR").put("TORE999999", 5);
+        hashMap.get("TRADE SHOW").put("TORE989898", 5);
+        hashMap.get("TRADE SHOW").put("TORM121219", 5);
+        customerBooking.put("TORC1234", new HashSet<>());
+        customerBooking.get("TORC1234").add("TORA123412");
+
+
     }
 
 
@@ -29,14 +38,19 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
             if (exists) {
                 temp = hashMap.get(eventType);
                 if (temp.containsKey(eventID)) {
-                    temp.put(eventID, temp.get(eventID) - 1);
-                    if (customerBooking.containsKey(customerID))
-                        customerBooking.get(customerID).add(eventID);
-                    else {
-                        customerBooking.put(customerID, new HashSet<>());
-                        customerBooking.get(customerID).add(eventID);
+                    if (temp.get(eventID) > 0) {
+                        temp.put(eventID, temp.get(eventID) - 1);
+                        if (customerBooking.containsKey(customerID))
+                            customerBooking.get(customerID).add(eventID);
+                        else {
+                            customerBooking.put(customerID, new HashSet<>());
+                            customerBooking.get(customerID).add(eventID);
+                        }
+                        reply = "Successfully Booked";
+                    } else {
+                        reply = "CAPACITY FULL";
                     }
-                    reply = "Successfully Booked";
+
                 } else {
 
                     reply = "No SUCH EVENT ID FOUND";
@@ -115,5 +129,17 @@ public class ServerImplimentationToronto extends UnicastRemoteObject implements 
     public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
         System.out.println(hashMap);
         return hashMap;
+    }
+
+    public String getBookingSchedule(String customerId) throws RemoteException {
+        String reply = "";
+        if (customerBooking.containsKey(customerId)) {
+            reply = customerBooking.get(customerId).toString();
+        } else {
+            reply = "NO SUCH CUSTOMER FOUND";
+        }
+
+
+        return reply;
     }
 }

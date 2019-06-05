@@ -63,4 +63,9 @@ public class ServerImplimentationOttawa extends UnicastRemoteObject implements M
         System.out.println(hashMap);
         return hashMap;
     }
+
+    @Override
+    public String getBookingSchedule(String customerID) throws RemoteException {
+        return null;
+    }
 }

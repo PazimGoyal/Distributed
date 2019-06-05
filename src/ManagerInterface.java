@@ -17,5 +17,7 @@ public interface ManagerInterface extends Remote {
 
     public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException;
 
+    public String getBookingSchedule(String customerID) throws RemoteException;
+
 }
 
