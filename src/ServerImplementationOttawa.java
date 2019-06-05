@@ -1,20 +1,21 @@
-import java.rmi.*;
-import java.rmi.server.*;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 
-public class ServerImplimentationMontreal extends UnicastRemoteObject implements ManagerInterface {
+public class ServerImplementationOttawa extends UnicastRemoteObject implements ManagerInterface {
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
 
-    public ServerImplimentationMontreal() throws RemoteException {
+    public ServerImplementationOttawa() throws RemoteException {
 
         super();
 
         HashMap<String, Integer> hashMap1 = new HashMap<>();
-        hashMap1.put("MTLM1234", 5);
-        hashMap1.put("MTLE2134", 3);
-        hashMap1.put("MTLA3234", 5);
-        hashMap1.put("MTLM5934", 8);
-        hashMap1.put("MTLE7254", 1);
+        hashMap1.put("OTWM1234", 5);
+        hashMap1.put("OTWE2134", 4);
+        hashMap1.put("OTWA3234", 3);
+        hashMap1.put("OTWM5934", 2);
+        hashMap1.put("OTWE7254", 1);
+
         hashMap.put("Confrence", hashMap1);
         hashMap.put("Trade Show", hashMap1);
         hashMap.put("Seminar", hashMap1);
@@ -32,12 +33,12 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
 
     public String listEventAvailability(String eventType) throws RemoteException {
         return "";
+
     }
 
     public void addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
         boolean exists = hashMap.containsKey(eventType);
         HashMap<String, Integer> temp;
-
         if (exists) {
             temp = hashMap.get(eventType);
             if (temp.containsKey(eventID)) {
@@ -45,7 +46,9 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
                 temp.put(eventID, bookingCapacity);
             } else {
                 temp.put(eventID, bookingCapacity);
+
             }
+
         } else {
             temp = new HashMap<>();
             temp.put(eventID, bookingCapacity);
@@ -57,12 +60,12 @@ public class ServerImplimentationMontreal extends UnicastRemoteObject implements
 
     @Override
     public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
-        System.out.println(hashMap.values());
+        System.out.println(hashMap);
         return hashMap;
     }
 
     @Override
     public String getBookingSchedule(String customerID) throws RemoteException {
-        return "";
+        return null;
     }
 }

@@ -1,9 +1,6 @@
-import java.io.*;
-import java.net.MalformedURLException;
 import java.rmi.*;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Spliterator;
 
 public class Client {
     static HashMap<String, String> hashMap = new HashMap<>();
@@ -11,7 +8,7 @@ public class Client {
     static ManagerInterface MtlInterface;
     static ManagerInterface OtwInterface;
     static String id = "";
-    static boolean idtaken = false;
+    static boolean idTaken = false;
     static Scanner obj;
     static ManagerInterface interFace;
 
@@ -28,12 +25,12 @@ public class Client {
                     String[] vals = split(id);
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
-                        idtaken = false;
+                        idTaken = false;
                         System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event\n4. Book Event\n5.EventList Bookings\n6.Cancel ");
                         int ans = obj.nextInt();
                         options(ans);
                     } else {
-                        idtaken = true;
+                        idTaken = true;
                         System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3.List Bookings");
                         int ans = obj.nextInt();
                         options(ans + 3);
@@ -76,7 +73,7 @@ public class Client {
 
                 break;
             case 4:
-                if (!idtaken)
+                if (!idTaken)
                     id = getCustomerID();
                 type = getType();
                 uniqueid = getEventID();
@@ -88,7 +85,7 @@ public class Client {
                 break;
             case 5:
 
-                if (!idtaken)
+                if (!idTaken)
                     id = getCustomerID();
                 reply = interFace.getBookingSchedule(id);
                 System.out.println(reply);
@@ -112,7 +109,7 @@ public class Client {
         else if (typ == 2)
             type = "Trade Show";
         else if (typ == 3)
-            type = "Confrence";
+            type = "Conference";
         else {
             System.out.println("Invalid Option...Try Again");
             getType();
