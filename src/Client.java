@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.Spliterator;
 
 public class Client {
-   static HashMap<String, String> hashMap = new HashMap<>();
+    static HashMap<String, String> hashMap = new HashMap<>();
     static ManagerInterface TorInterface;
     static ManagerInterface MtlInterface;
     static ManagerInterface OtwInterface;
@@ -41,13 +41,13 @@ public class Client {
                 } else {
                     continue;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static void options(int ans) throws Exception{
+    public static void options(int ans) throws Exception {
         String type = "", uniqueid = "";
         int booking;
         switch (ans) {
@@ -55,24 +55,20 @@ public class Client {
                 type = getType();
                 uniqueid = getEventID();
                 booking = getBooking();
-                    interFace.addEvent(uniqueid, type, booking);
-                    interFace.getHashMap();
+                interFace.addEvent(uniqueid, type, booking);
+                interFace.getHashMap();
                 break;
 
             case 2:
-                type=getType();
-                uniqueid=getEventID();
-           String reply=     interFace.removeEvent(uniqueid,type);
-                System.out.println(interFace.getHashMap().values());
+                type = getType();
+                uniqueid = getEventID();
+                String reply = interFace.removeEvent(uniqueid, type);
+                System.out.println(interFace.getHashMap());
                 System.out.println(reply);
 
 
                 break;
             case 4:
-
-
-
-
 
 
                 break;
@@ -96,7 +92,7 @@ public class Client {
             System.out.println("Invalid Option...Try Again");
             getType();
         }
-        return type;
+        return type.toUpperCase();
     }
 
     public static String getEventID() {
@@ -170,7 +166,7 @@ public class Client {
 
         try {
             TorServer();
-  //          MtlServer();
+            //          MtlServer();
 //            OtwServer();
 
         } catch (Exception e) {
