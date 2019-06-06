@@ -1,7 +1,5 @@
 import java.rmi.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client {
     static HashMap<String, HashSet<String>> hashMap = new HashMap<>();
@@ -74,10 +72,36 @@ public class Client {
                 System.out.println(interFace.listEventAvailability(type));
                 break;
             case 4:
+                int temp=0;
                 if (!idTaken)
                     id = getCustomerID();
                 type = getType();
                 uniqueid = getEventID();
+                boolean canI=false;
+                if(id.substring(0,3).equals(uniqueid.substring(0,3)))
+                    canI=true;
+                else{
+
+                    if(hashMap.containsKey(id)){
+                        HashSet<String>  hashSet=hashMap.get(id);
+                        ArrayList<String> abc=new ArrayList(hashSet);
+                        for(int i=0;i<hashSet.size();i++){
+                          String eid=  abc.get(i);
+                          if(!id.substring(0,3).equals(eid.substring(0,3)))
+                          {
+                            if(  uniqueid.substring(6,8).equals(eid.substring(6,8)))
+                                temp++;
+                          }
+                        }
+                    }
+
+                    else {canI=true;
+                    temp=0;}
+                }
+
+
+
+                if(canI && temp<3){
                 reply = interFace.bookEvent(id, uniqueid, type);
                 if (reply.equals("Successfully Booked")) {
                     if (hashMap.containsKey(id)) {
@@ -89,6 +113,9 @@ public class Client {
                     }
                 }
                 System.out.println(reply);
+                }else{
+                    System.out.println("CUSTOMER HAVE MORE THEN THREE BOOKINGS FOR THAT MONTH");
+                }
                 break;
             case 5:
                 if (!idTaken)
@@ -225,7 +252,7 @@ else
         try {
             String city = id.substring(0, 3).toUpperCase().trim();
             String mc = id.substring(3, 4).trim().toUpperCase();
-            String uid = id.substring(4, 8).trim();
+            String uid = id.substring(4).trim();
             if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
                 ans=true;
             else {ans=false;
@@ -251,7 +278,7 @@ else
         try {
             String city = id.substring(0, 3).toUpperCase().trim();
             String mc = id.substring(3, 4).trim().toUpperCase();
-            String uid = id.substring(4, 8).trim();
+            String uid = id.substring(4).trim();
             if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
                 ans=true;
             else {ans=false;

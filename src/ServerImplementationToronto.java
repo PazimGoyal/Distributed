@@ -196,7 +196,7 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         if (customerBooking.containsKey(customerId)) {
             reply = customerBooking.get(customerId).toString();
         } else {
-            reply = "NO SUCH CUSTOMER FOUND On Toronto Server";
+            reply = "NO SUCH CUSTOMER FOUND ON TORONTO SERVER";
         }
 
         String value = "getBookingSchedule:" + customerId;
@@ -218,12 +218,6 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         } else {
             reply = "NO SUCH CUSTOMER FOUND ON TORONTO SERVER";
         }
-
-        String value = "getBookingSchedule:" + customerId;
-        reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
-        String value1 = "getBookingSchedule:" + customerId;
-        reply = reply + "\n" + sendEventToCorrectServer(value1, 8085);
-
 
         return reply;
     }
