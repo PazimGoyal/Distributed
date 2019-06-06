@@ -1,9 +1,10 @@
 import java.rmi.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Client {
-    static HashMap<String, String> hashMap = new HashMap<>();
+    static HashMap<String, HashSet<String>> hashMap = new HashMap<>();
     static ManagerInterface TorInterface;
     static ManagerInterface MtlInterface;
     static ManagerInterface OtwInterface;
@@ -26,22 +27,22 @@ public class Client {
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
                         idTaken = false;
-                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event Availability \n4. Book Event\n5. Get Booking Schedule\n6.Cancel ");
+                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event Availability \n4. Book Event\n5.Cancel Event \n6.Get Booking Schedule");
                         int ans = obj.nextInt();
                         options(ans);
                     } else {
                         idTaken = true;
-                        System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3. Get Booking Schedule");
+                        System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3.Get Booking Schedule");
                         int ans = obj.nextInt();
                         options(ans + 3);
                     }
                 } else if (opt.equals("2") || opt == "2") {
-                    break;
+                    System.exit(0);
                 } else {
                     continue;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error While Entering ... Try Again");
             }
         }
     }
@@ -49,6 +50,7 @@ public class Client {
     public static void options(int ans) throws Exception {
         String type = "", uniqueid = "";
         int booking;
+        try{
         switch (ans) {
             case 1:
                 type = getType();
@@ -78,11 +80,26 @@ public class Client {
                 uniqueid = getEventID();
                 reply = interFace.bookEvent(id, uniqueid, type);
                 if (reply.equals("Successfully Booked")) {
-                    hashMap.put(id, uniqueid);
+                    if (hashMap.containsKey(id)) {
+                        hashMap.get(id).add(type + "||" + uniqueid);
+                    } else {
+                        HashSet<String> hashSet = new HashSet<>();
+                        hashSet.add(type + "||" + uniqueid);
+                        hashMap.put(id, hashSet);
+                    }
                 }
                 System.out.println(reply);
                 break;
             case 5:
+                if (!idTaken)
+                    id = getCustomerID();
+                type = getType();
+                uniqueid = getEventID();
+                reply = interFace.cancelEvent(id, uniqueid, type);
+                if (reply.equals("Event Canceled Successfully")) {
+                    hashMap.get(id).remove(type + "||" + uniqueid);
+                }
+                System.out.println(reply);
 
 
                 break;
@@ -95,6 +112,10 @@ public class Client {
 
             default:
                 break;
+
+        }
+        }catch (Exception e){
+            System.out.println("Error");
         }
     }
 
@@ -121,7 +142,15 @@ public class Client {
         System.out.println("ENTER EVENT ID e.g MTLA100919 :- ");
         obj.nextLine();
         uniqueid = obj.nextLine();
-        return uniqueid.toUpperCase();
+        if(eventIdCheck(uniqueid))
+           return uniqueid.toUpperCase();
+else
+        {
+            System.out.println("INVALID EVENT ID TRY AGAIN");
+            getEventID();
+        }
+        return "";
+
     }
 
     public static String getCustomerID() {
@@ -129,7 +158,14 @@ public class Client {
         System.out.println("ENTER CUSTOMER ID e.g MTLC1234 :- ");
         obj.nextLine();
         uniqueid = obj.nextLine();
-        return uniqueid;
+        if(idCheck(uniqueid))
+            return uniqueid;
+        else
+        {
+            System.out.println("INVALID ID TRY AGAIN");
+            getCustomerID();
+        }
+        return "";
     }
 
     public static Integer getBooking() {
@@ -172,7 +208,7 @@ public class Client {
     public static String[] split(String id) {
         String vals[] = new String[3];
 
-        if (0 < id.length() && id.length() < 9) {
+        if (idCheck(id)) {
             vals[0] = id.substring(0, 3).toUpperCase();
             vals[1] = id.substring(3, 4).toUpperCase();
             System.out.println(vals[1]);
@@ -183,6 +219,60 @@ public class Client {
         return vals;
 
     }
+
+    public static boolean idCheck(String id){
+        boolean ans=false;
+        try {
+            String city = id.substring(0, 3).toUpperCase().trim();
+            String mc = id.substring(3, 4).trim().toUpperCase();
+            String uid = id.substring(4, 8).trim();
+            if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
+                ans=true;
+            else {ans=false;
+            return ans;}
+            if (mc.equals("M")||mc.equals("C"))
+                ans=true;
+            else{
+                return false;
+            }
+            if(uid.length()>4||uid.length()<4)
+                return false;
+            else
+                ans=true;
+            int a=Integer.parseInt(uid);
+
+        }catch (Exception e){
+            ans=false;
+        }
+        return ans;
+    }
+    public static boolean eventIdCheck(String id){
+        boolean ans=false;
+        try {
+            String city = id.substring(0, 3).toUpperCase().trim();
+            String mc = id.substring(3, 4).trim().toUpperCase();
+            String uid = id.substring(4, 8).trim();
+            if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
+                ans=true;
+            else {ans=false;
+                return ans;}
+            if (mc.equals("M")||mc.equals("E")||mc.equals("A"))
+                ans=true;
+            else{
+                return false;
+            }
+            if(uid.length()>6||uid.length()<6)
+                return false;
+            else
+                ans=true;
+            int a=Integer.parseInt(uid);
+
+        }catch (Exception e){
+            ans=false;
+        }
+        return ans;
+    }
+
 
 
     public static void start() {
@@ -199,5 +289,9 @@ public class Client {
 
 
     }
+
+
+
+
 
 }

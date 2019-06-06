@@ -192,6 +192,11 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
         return reply;
     }
 
+    @Override
+    public String cancelEvent(String customerID, String eventID, String eventType) throws RemoteException {
+        return null;
+    }
+
     public String getBookingScheduleServerCall(String customerId) throws RemoteException {
         String reply = "";
         if (customerBooking.containsKey(customerId)) {

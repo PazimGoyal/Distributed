@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,6 +13,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
     public static HashMap<String, HashSet<String>> customerBooking = new HashMap<>();
     static String name = "MTL";
+    FileWriter fileWriter;
 
     public ServerImplementationMontreal() throws RemoteException {
 
@@ -31,8 +33,13 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         customerBooking.get("MTLC1234").add("MTLA123412");
         customerBooking.put("TORC1234", new HashSet<>());
         customerBooking.get("TORC1234").add("MTLA123412");
+        try{
+          fileWriter  =new FileWriter("MontrealLogs.txt");
+
+        }catch (Exception e){}
 
     }
+
 
 
     public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
@@ -201,6 +208,11 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
 
 
         return reply;
+    }
+
+    @Override
+    public String cancelEvent(String customerID, String eventID, String eventType) throws RemoteException {
+        return null;
     }
 
     public String getBookingScheduleServerCall(String customerId) throws RemoteException {

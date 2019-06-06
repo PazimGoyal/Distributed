@@ -28,11 +28,31 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         hashMap.get("TRADE SHOW").put("TORE989898", 5);
         hashMap.get("TRADE SHOW").put("TORM121219", 5);
         customerBooking.put("TORC1234", new HashSet<>());
-        customerBooking.get("TORC1234").add("TORA123412");
+        customerBooking.get("TORC1234").add("SEMINAR||TORA123412");
 
     }
 
+public String cancelEvent(String customerID,String eventID,String eventType)throws RemoteException{
+        String reply="";
+        if(customerBooking.containsKey(customerID)){
+           HashSet<String> bookingHash=customerBooking.get(customerID);
+            if(bookingHash.contains(eventType+"||"+eventID)){
+                bookingHash.remove(eventType+"||"+eventID);
+             HashMap<String,Integer> book=   hashMap.get(eventType);
+             int a=book.get(eventID);
+             book.put(eventID,a+1);
+             hashMap.put(eventType,book);
+                reply="Event Canceled Successfully";
+            }else{
+                reply="No Booking For Such Customer Found";
+            }
+        }else{
+            reply="NO SUCH CUSTOMER FOUND FOR EVENT";
+        }
 
+
+        return reply;
+}
     public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
         String reply = "";
         String[] EventIdArray = (eventID.split("(?<=\\G...)"));
@@ -49,10 +69,10 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
                         if (temp.get(eventID) > 0) {
                             temp.put(eventID, temp.get(eventID) - 1);
                             if (customerBooking.containsKey(customerID))
-                                customerBooking.get(customerID).add(eventID);
+                                customerBooking.get(customerID).add(eventType+"||"+eventID);
                             else {
                                 customerBooking.put(customerID, new HashSet<>());
-                                customerBooking.get(customerID).add(eventID);
+                                customerBooking.get(customerID).add(eventType+"||"+eventID);
                             }
                             reply = "Successfully Booked";
                         } else {
@@ -176,7 +196,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         if (customerBooking.containsKey(customerId)) {
             reply = customerBooking.get(customerId).toString();
         } else {
-            reply = "NO SUCH CUSTOMER FOUND";
+            reply = "NO SUCH CUSTOMER FOUND On Toronto Server";
         }
 
         String value = "getBookingSchedule:" + customerId;
@@ -191,9 +211,12 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
     public String getBookingScheduleServerCall(String customerId) throws RemoteException {
         String reply = "";
         if (customerBooking.containsKey(customerId)) {
-            reply = customerBooking.get(customerId).toString();
+            if(customerBooking.get(customerId).size()<=0){
+                reply="CUSTOMER NO LONGER HAVE ANY BOOKINGS";
+            }else{
+            reply = customerBooking.get(customerId).toString();}
         } else {
-            reply = "NO SUCH CUSTOMER FOUND";
+            reply = "NO SUCH CUSTOMER FOUND ON TORONTO SERVER";
         }
 
         String value = "getBookingSchedule:" + customerId;
