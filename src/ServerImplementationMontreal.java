@@ -1,4 +1,8 @@
 import java.io.FileWriter;
+import sun.rmi.runtime.Log;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -49,6 +53,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         if (EventCityCode.equals("MTL")) {
             if (customerBooking.containsKey(customerID) && (customerBooking.get(customerID).contains(eventID))) {
                 reply = "Event Already Booked for Customer";
+                LogData("Event Already Booked : Event :" + eventID + " Already Booked for Customer "+customerID+"\n");
             } else {
                 HashMap<String, Integer> temp;
                 boolean exists = hashMap.containsKey(eventType);
@@ -64,28 +69,36 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
                                 customerBooking.get(customerID).add(eventID);
                             }
                             reply = "Successfully Booked";
+                            LogData("Successfully Booked : Event :" + eventID + " Event Type: " + eventType +" Successfully Booked for Customer :"+customerID+"\n");
                         } else {
                             reply = "CAPACITY FULL";
+                            LogData("CAPACITY FULL  :Event :" + eventID + " Event Type: " + eventType +" not Booked for Customer :"+customerID+"\n");
                         }
 
                     } else {
-
                         reply = "No SUCH EVENT ID FOUND";
+                        LogData("No SUCH EVENT ID FOUND  :Event :" + eventID + " Event Type: " + eventType +" Not Booked for Customer \n");
                     }
 
                 } else
                     reply = "NO SUCH EVENT TYPE FOUND";
+                    LogData("NO SUCH EVENT TYPE FOUND  :Event :" + eventID + " Event Type: " + eventType +" Not Booked for Customer \n");
             }
             System.out.println("----->" + customerBooking);
             return reply;
         } else {
             if (EventCityCode.equals("TOR")) {
+                LogData("Forwarding the request to Toronto server for Event :" + eventID + " for Customer "+customerID+"\n");
                 String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
                 reply = sendEventToCorrectServer(value, 8086);
+                LogData("Reply received from Toronto server for Event :" + eventID + " for Customer "+customerID+" is "+reply+" \n");
+
             } else {
 //                ottawa
-               String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
+                LogData("Forwarding the request to Ottawa server for Event :" + eventID + " for Customer "+customerID+"\n");
+                String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
                 reply = sendEventToCorrectServer(value, 8085);
+                LogData("Reply received from Ottawa server for Event :" + eventID + " for Customer "+customerID+" is "+reply+" \n");
             }
         }
         return reply;
@@ -102,12 +115,18 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             if (temp.containsKey(eventID)) {
                 temp.remove(eventID);
                 reply = "EVENT ID REMOVED SUCCESSFULLY";
+                LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType +", Successfully Removed \n");
+
+
             } else {
                 reply = "No SUCH EVENT ID FOUND";
+                LogData("No SUCH EVENT ID FOUND : Event :" + eventID + " Event Type: " + eventType +", event id not found \n");
             }
 
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
+            LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType +" ,event type not found \n");
+
         }
         return reply;
 
@@ -122,17 +141,24 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         if (exists) {
             temp = hashMap.get(eventType);
             reply = reply + " :- " + temp.toString().substring(1, temp.toString().length() - 1);
+            LogData("Fetching Event Availability for "+ eventType+":"+reply+"\n");
 
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
+            LogData("NO SUCH EVENT TYPE FOUND : for "+ eventType+"\n");
         }
 
 //Ottawa
+        LogData("Fetching Data from Ottawa Server : for "+ eventType+"\n");
         String value = "listEventAvailability:" + eventType;
         reply = reply + "\n" + sendEventToCorrectServer(value, 8085);
-//Totonto
+        LogData("Fetching Data from Ottawa Server : Reply is : "+ reply+"\n");
+
+        //Toronto
+        LogData("Fetching Data from Toronto To Server : for "+ eventType+"\n");
         String value1 = "listEventAvailability:" + eventType;
         reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
+        LogData("Fetching Data from Toronto Server : Reply is : "+ reply+"\n");
 
         return reply;
     }
@@ -145,15 +171,18 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         if (exists) {
             temp = hashMap.get(eventType);
             reply = reply + " :- " + temp.toString().substring(1, temp.toString().length() - 1);
+            LogData("Fetching Event Availability for "+ eventType+":"+reply+"\n");
+
 
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
+            LogData("NO SUCH EVENT TYPE FOUND : for "+ eventType+"\n");
+
         }
         return reply;
 
 
     }
-
 
 
     public String addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
@@ -267,6 +296,18 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             return true;
         } else
             return false;
+    }
+
+    public void LogData(String value) {
+        String content = value;
+        // If the file doesn't exists, create and write to it
+        // If the file exists, truncate (remove all content) and write to it
+        try (FileWriter writer = new FileWriter("Server.log");
+             BufferedWriter bw = new BufferedWriter(writer)) {
+            bw.write(content);
+        } catch (IOException e) {
+            System.err.format("IOException: %s%n", e);
+        }
     }
 
 }
