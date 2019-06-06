@@ -120,6 +120,25 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
 
     }
 
+    public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
+
+        HashMap<String, Integer> temp;
+        String reply = eventType;
+        boolean exists = hashMap.containsKey(eventType);
+        if (exists) {
+            temp = hashMap.get(eventType);
+            reply = reply + " :- " + temp.toString().substring(1, temp.toString().length() - 1);
+
+        } else {
+            reply = "NO SUCH EVENT TYPE FOUND";
+        }
+        return reply;
+
+
+    }
+
+
+
     public String addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
         if (checkEventCity(eventID)) {
             boolean exists = hashMap.containsKey(eventType);
@@ -163,11 +182,18 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
         }
-
-
         return reply;
     }
 
+    public String getBookingScheduleServerCall(String customerId) throws RemoteException {
+        String reply = "";
+        if (customerBooking.containsKey(customerId)) {
+            reply = customerBooking.get(customerId).toString();
+        } else {
+            reply = "NO SUCH CUSTOMER FOUND";
+        }
+        return reply;
+    }
 
     public static String sendEventToCorrectServer(String rawMessage, int remotePortNumber) {
         DatagramSocket aSocket = null;

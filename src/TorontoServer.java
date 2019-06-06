@@ -7,11 +7,13 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 
 public class TorontoServer {
+    static ServerImplementationToronto exportedObj;
+
     public static void main(String args[]) {
         try {
 
             startRegistry(8080);
-            ServerImplementationToronto exportedObj = new ServerImplementationToronto();
+            exportedObj = new ServerImplementationToronto();
             Naming.rebind("rmi://localhost:" + 8080 + "/toronto", exportedObj);
             System.out.println("Hello Server ready.");
             startUDPServer(8086);
@@ -22,6 +24,7 @@ public class TorontoServer {
 
     private static void startUDPServer(int portNumber) {
         DatagramSocket aSocket = null;
+        String val = "";
         try {
             aSocket = new DatagramSocket(portNumber);
             byte[] buffer = new byte[10000];// to stored the received data from
@@ -33,8 +36,16 @@ public class TorontoServer {
                 aSocket.receive(request);
 
                 System.out.println("Request received from client: " + new String(request.getData()));
-                /*TODO : Write appropriate message upon receive*/
-                String val = "Message received sending response";
+                String valuePassed = new String(request.getData());
+                String[] parameterToBePassed = valuePassed.split(":");
+                if (parameterToBePassed[0].equals("bookEvent")) {
+                    val = exportedObj.bookEvent(parameterToBePassed[1].trim(), parameterToBePassed[2].trim(), parameterToBePassed[3].trim());
+                } else if (parameterToBePassed[0].equals("listEventAvailability")) {
+                    val = exportedObj.listEventAvailabilityServerCall(parameterToBePassed[1].trim());
+                } else if (parameterToBePassed[0].equals("getBookingSchedule")) {
+                    val = exportedObj.getBookingScheduleServerCall(parameterToBePassed[1].trim());
+                }
+
                 DatagramPacket reply = new DatagramPacket(val.getBytes(), val.length(), request.getAddress(),
                         request.getPort());// reply packet ready
 

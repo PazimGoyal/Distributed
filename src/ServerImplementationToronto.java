@@ -29,8 +29,6 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         hashMap.get("TRADE SHOW").put("TORM121219", 5);
         customerBooking.put("TORC1234", new HashSet<>());
         customerBooking.get("TORC1234").add("TORA123412");
-
-
     }
 
 
@@ -75,11 +73,12 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
                 String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
                 reply = sendEventToCorrectServer(value, 8084);
             } else {
-//                TODO : OTTAWA
+//                OTTAWA
+                String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
+                reply = sendEventToCorrectServer(value, 8085);
             }
         }
         return reply;
-
     }
 
     public String removeEvent(String eventID, String eventType) throws RemoteException {
@@ -101,7 +100,6 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         }
         return reply;
 
-
     }
 
     public String listEventAvailability(String eventType) throws RemoteException {
@@ -112,13 +110,28 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         if (exists) {
             temp = hashMap.get(eventType);
             reply = reply + " :- " + temp.toString().substring(1, temp.toString().length() - 1);
-
         } else {
-            reply = "NO SUCH EVENT TYPE FOUND";
+            reply = "NO SUCH EVENT TYPE FOUND ON TORONTO SERVER ";
+        }
+        String value = "listEventAvailability:" + eventType;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
+        String value1 = "listEventAvailability:" + eventType;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8085);
+
+        return reply;
+    }
+
+    public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
+        HashMap<String, Integer> temp;
+        String reply = eventType;
+        boolean exists = hashMap.containsKey(eventType);
+        if (exists) {
+            temp = hashMap.get(eventType);
+            reply = reply + " :- " + temp.toString().substring(1, temp.toString().length() - 1);
+        } else {
+            reply = "NO SUCH EVENT TYPE FOUND ON TORONTO SERVER";
         }
         return reply;
-
-
     }
 
     public String addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
@@ -164,6 +177,28 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
         }
+
+        String value = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
+        String value1 = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8085);
+
+
+        return reply;
+    }
+
+    public String getBookingScheduleServerCall(String customerId) throws RemoteException {
+        String reply = "";
+        if (customerBooking.containsKey(customerId)) {
+            reply = customerBooking.get(customerId).toString();
+        } else {
+            reply = "NO SUCH CUSTOMER FOUND";
+        }
+
+        String value = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
+        String value1 = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8085);
 
 
         return reply;

@@ -26,7 +26,7 @@ public class Client {
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
                         idTaken = false;
-                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event\n4. Book Event\n5.EventList Bookings\n6.Cancel ");
+                        System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event Availability \n4. Book Event\n5. Get Booking Schedule\n6.Cancel ");
                         int ans = obj.nextInt();
                         options(ans);
                     } else {

@@ -39,17 +39,14 @@ public class MontrealServer {
                 System.out.println("Request received from client: " + new String(request.getData()));
                 String valuePassed = new String(request.getData());
                 String[] parameterToBePassed = valuePassed.split(":");
-                if (parameterToBePassed[0].equals("bookEvent")) ;
-                {
+                if (parameterToBePassed[0].equals("bookEvent")) {
                     val = exportedObj.bookEvent(parameterToBePassed[1].trim(), parameterToBePassed[2].trim(), parameterToBePassed[3].trim());
+                } else if (parameterToBePassed[0].equals("listEventAvailability")) {
+                    val = exportedObj.listEventAvailabilityServerCall(parameterToBePassed[1].trim());
+                } else if (parameterToBePassed[0].equals("getBookingSchedule")) {
+                    val = exportedObj.getBookingScheduleServerCall(parameterToBePassed[1].trim());
                 }
-//				exportedObj.bookEvent();
-//				exportedObj.listEventAvailability();
-//				exportedObj.removeEvent();
-                /*TODO : customer ke 3ino  and  manager ka list*/
 
-
-                /*TODO : Write appropriate message upon receive*/
                 DatagramPacket reply = new DatagramPacket(val.getBytes(), val.length(), request.getAddress(),
                         request.getPort());// reply packet ready
 
