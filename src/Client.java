@@ -73,6 +73,7 @@ public class Client {
                 break;
             case 4:
                 int temp=0;
+                System.out.println(hashMap);
                 if (!idTaken)
                     id = getCustomerID();
                 type = getType();
@@ -87,7 +88,7 @@ public class Client {
                         ArrayList<String> abc=new ArrayList(hashSet);
                         for(int i=0;i<hashSet.size();i++){
                           String eid=  abc.get(i);
-                          if(!id.substring(0,3).equals(eid.substring(0,3)))
+                          if(!id.substring(0,3).equals(eid.split("\\|\\|")[1].substring(0,3)))
                           {
                             if(  uniqueid.substring(6,8).equals(eid.substring(6,8)))
                                 temp++;

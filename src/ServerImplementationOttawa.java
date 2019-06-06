@@ -38,6 +38,7 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
 
     public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
         String reply = "";
+        System.out.println(customerBooking);
         String[] EventIdArray = (eventID.split("(?<=\\G...)"));
         String EventCityCode = EventIdArray[0];
         if (EventCityCode.equals("OTW")) {
