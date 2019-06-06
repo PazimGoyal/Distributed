@@ -70,11 +70,13 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             System.out.println("----->" + customerBooking);
             return reply;
         } else {
-            if (EventCityCode.equals("MTL")) {
+            if (EventCityCode.equals("TOR")) {
                 String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
-                reply = sendEventToCorrectServer(value, 8084);
+                reply = sendEventToCorrectServer(value, 8086);
             } else {
-//                TODO : OTTAWA
+//                ottawa
+               String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
+                reply = sendEventToCorrectServer(value, 8085);
             }
         }
         return reply;
@@ -115,9 +117,15 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
         }
+
+//Ottawa
+        String value = "listEventAvailability:" + eventType;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8085);
+//Totonto
+        String value1 = "listEventAvailability:" + eventType;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
+
         return reply;
-
-
     }
 
     public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
@@ -182,6 +190,14 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
         }
+//        Ottawa
+        String value = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8085);
+//        Toronto
+        String value1 = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
+
+
         return reply;
     }
 

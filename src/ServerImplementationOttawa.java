@@ -180,6 +180,11 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
         }
+        String value = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
+        String value1 = "getBookingSchedule:" + customerId;
+        reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
+
         return reply;
     }
 
