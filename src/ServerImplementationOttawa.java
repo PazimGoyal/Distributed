@@ -29,6 +29,8 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
         hashMap.get("TRADE SHOW").put("OTWM121219", 5);
         customerBooking.put("OTWC1234", new HashSet<>());
         customerBooking.get("OTWC1234").add("OTWA123412");
+        customerBooking.put("TORC1234", new HashSet<>());
+        customerBooking.get("TORC1234").add("OTWA123412");
 
 
     }
@@ -180,8 +182,10 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
         }
+//        Montreal
         String value = "getBookingSchedule:" + customerId;
         reply = reply + "\n" + sendEventToCorrectServer(value, 8084);
+//        Toronto
         String value1 = "getBookingSchedule:" + customerId;
         reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
 

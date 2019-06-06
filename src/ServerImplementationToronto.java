@@ -29,6 +29,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         hashMap.get("TRADE SHOW").put("TORM121219", 5);
         customerBooking.put("TORC1234", new HashSet<>());
         customerBooking.get("TORC1234").add("TORA123412");
+
     }
 
 

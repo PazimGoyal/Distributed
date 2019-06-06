@@ -31,7 +31,7 @@ public class Client {
                         options(ans);
                     } else {
                         idTaken = true;
-                        System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3.List Bookings");
+                        System.out.println("SELECT 1 to 3\n1. Book Event\n2.Cancel Event\n3. Get Booking Schedule");
                         int ans = obj.nextInt();
                         options(ans + 3);
                     }
@@ -84,13 +84,13 @@ public class Client {
                 break;
             case 5:
 
+
+                break;
+            case 6:
                 if (!idTaken)
                     id = getCustomerID();
                 reply = interFace.getBookingSchedule(id);
                 System.out.println(reply);
-                break;
-            case 6:
-
                 break;
 
             default:
