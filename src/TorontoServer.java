@@ -15,7 +15,7 @@ public class TorontoServer {
             startRegistry(8080);
             exportedObj = new ServerImplementationToronto();
             Naming.rebind("rmi://localhost:" + 8080 + "/toronto", exportedObj);
-            System.out.println("Hello Server ready.");
+            System.out.println("Toronto RMI server Ready.");
             startUDPServer(8086);
         } catch (Exception re) {
             System.out.println("Exception in HelloServer.main: " + re);
@@ -27,7 +27,7 @@ public class TorontoServer {
         String val = "";
         try {
             aSocket = new DatagramSocket(portNumber);
-            byte[] buffer = new byte[500];// to stored the received data from
+            byte[] buffer = new byte[10000];// to stored the received data from
             // the client.
             System.out.println("Toronto UDP Server Started on 8086............");
             while (true) {
@@ -44,6 +44,8 @@ public class TorontoServer {
                     val = exportedObj.listEventAvailabilityServerCall(parameterToBePassed[1].trim());
                 } else if (parameterToBePassed[0].equals("getBookingSchedule")) {
                     val = exportedObj.getBookingScheduleServerCall(parameterToBePassed[1].trim());
+                } else if (parameterToBePassed[0].equals("cancelEvent")) {
+                    val = exportedObj.cancelEvent(parameterToBePassed[1].trim(), parameterToBePassed[2].trim(), parameterToBePassed[3].trim());
                 }
 
                 DatagramPacket reply = new DatagramPacket(val.getBytes(), val.length(), request.getAddress(),

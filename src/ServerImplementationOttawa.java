@@ -230,7 +230,7 @@ public class ServerImplementationOttawa extends UnicastRemoteObject implements M
             //Client waits until the reply is received-----------------------------------------------------------------------
             aSocket.receive(reply);//reply received and will populate reply packet now.
             System.out.println("Reply received from the server is: " + new String(reply.getData()));//print reply message after converting it to a string from bytes
-            value = new String(reply.getData());
+            value = new String(reply.getData()).trim();
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {

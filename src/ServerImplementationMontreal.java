@@ -44,6 +44,53 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
 
     }
 
+    public String cancelEvent(String customerID, String eventID, String eventType) throws RemoteException {
+        String reply = "";
+        String[] EventIdArray = (eventID.split("(?<=\\G...)"));
+        String EventCityCode = EventIdArray[0];
+        if (EventCityCode.equals("MTL")) {
+            if (customerBooking.containsKey(customerID)) {
+                HashSet<String> bookingHash = customerBooking.get(customerID);
+                if (bookingHash.contains(eventType + "||" + eventID)) {
+                    bookingHash.remove(eventType + "||" + eventID);
+                    HashMap<String, Integer> book = hashMap.get(eventType);
+                    int a = book.get(eventID);
+                    book.put(eventID, a + 1);
+                    hashMap.put(eventType, book);
+                    reply = "Event Canceled Successfully";
+                    LogData("Event Cancelled Successfully : Event :" + eventID + " for Event type "+eventType+" ,Customer "+customerID+" "+"\n");
+
+                } else {
+                    reply = "No Booking For Such Customer Found";
+                    LogData("Event Cancelled : Event :" + eventID + " for Event type "+eventType+" ,Customer "+customerID+" not successful as Customer not found "+"\n");
+
+                }
+            } else {
+                reply = "NO SUCH CUSTOMER FOUND FOR EVENT";
+                LogData("Event Cancelled : NO SUCH CUSTOMER FOUND FOR EVENT :Event :" + eventID + " for Event type "+eventType+" ,Customer "+customerID+" not successful as Customer not found "+"\n");
+
+            }
+
+        }else{
+            if (EventCityCode.equals("TOR")) {
+                LogData("Forwarding Cancel  request to Toronto server for Event :" + eventID + " for Customer "+customerID+"\n");
+                String value = "cancelEvent:" + customerID + ":" + eventID + ":" + eventType;
+                reply = sendEventToCorrectServer(value, 8086);
+                LogData("Reply received from Toronto server for Event :" + eventID + " for Customer "+customerID+" is "+reply+" \n");
+
+            } else {
+//                OTTAWA
+                LogData("Forwarding Cancel  request to Ottawa server for Event :" + eventID + " for Customer "+customerID+"\n");
+
+                String value = "cancelEvent:" + customerID + ":" + eventID + ":" + eventType;
+                reply = sendEventToCorrectServer(value, 8085);
+                LogData("Reply received from Ottawa server for Event :" + eventID + " for Customer "+customerID+" is "+reply+" \n");
+
+            }
+        }
+        return reply;
+    }
+
 
 
     public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
@@ -254,10 +301,8 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         return reply;
     }
 
-    @Override
-    public String cancelEvent(String customerID, String eventID, String eventType) throws RemoteException {
-        return null;
-    }
+
+
 
     public String getBookingScheduleServerCall(String customerId) throws RemoteException {
         String reply = "";
@@ -293,7 +338,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             //Client waits until the reply is received-----------------------------------------------------------------------
             aSocket.receive(reply);//reply received and will populate reply packet now.
             System.out.println("Reply received from the server is: " + new String(reply.getData()));//print reply message after converting it to a string from bytes
-            value = new String(reply.getData());
+            value = new String(reply.getData()).trim();
         } catch (SocketException e) {
             System.out.println("Socket: " + e.getMessage());
         } catch (IOException e) {
