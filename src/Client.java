@@ -21,12 +21,12 @@ public class Client {
         obj = new Scanner(System.in);
 
         start();
-        try {
+        /*try {
             MultiThread();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        while (true) {
+        */while (true) {
             try {
                 System.out.println("Enter 1 to enter id or 2 to exit");
                 String opt = obj.nextLine();
