@@ -66,6 +66,7 @@ public class Client {
                     type = getType();
                     uniqueid = getEventID();
                     booking = getBooking();
+
                     String reply = interFace.addEvent(uniqueid, type, booking).trim();
                     System.out.println(reply);
                     System.out.println(interFace.getHashMap());
@@ -156,6 +157,7 @@ public class Client {
                     if (!idTaken)
                         id = getCustomerID();
                     reply = interFace.getBookingSchedule(id).trim();
+     reply.replaceAll("SEMINAR\\|\\|"," ").replaceAll("TRADE SHOW\\|\\|"," ").replaceAll("CONFRENCE\\|\\|"," ");
                     System.out.println(reply);
                     break;
 
@@ -210,6 +212,7 @@ public class Client {
             return uniqueid.toUpperCase();
         else {
             System.out.println("INVALID ID TRY AGAIN");
+            obj.nextLine();
             getCustomerID();
         }
         return "";

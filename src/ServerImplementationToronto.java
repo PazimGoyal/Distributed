@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 public class ServerImplementationToronto extends UnicastRemoteObject implements ManagerInterface {
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
@@ -148,8 +147,8 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
     synchronized public String removeEvent(String eventID, String eventType) throws RemoteException {
         HashMap<String, Integer> temp;
         String reply = "";
-
         boolean exists = hashMap.containsKey(eventType);
+        if(checkEventCity(eventID)){
         if (exists) {
             temp = hashMap.get(eventType);
             if (temp.containsKey(eventID)) {
@@ -160,8 +159,6 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
                         tempHash.remove(eventType + "||" + eventID);
                     }
                 }
-
-
                 reply = "EVENT ID REMOVED SUCCESSFULLY";
                 LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType + "\n");
 
@@ -175,6 +172,10 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
             LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
 
         }
+        } else {
+
+            reply = "Manager CANNOT REMOVE EVENT FROM ANOTHER CITY";
+        }
         return reply.trim();
 
     }
@@ -182,7 +183,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
     synchronized public String listEventAvailability(String eventType) throws RemoteException {
 
         HashMap<String, Integer> temp;
-        String reply = eventType;
+        String reply = "TORONTO SERVER "+eventType;
         boolean exists = hashMap.containsKey(eventType);
         if (exists) {
             temp = hashMap.get(eventType);
@@ -210,7 +211,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
 
     synchronized public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
         HashMap<String, Integer> temp;
-        String reply = eventType;
+        String reply = "TORONTO SERVER "+ eventType;
         boolean exists = hashMap.containsKey(eventType);
         if (exists) {
             temp = hashMap.get(eventType);
@@ -316,7 +317,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         DatagramSocket aSocket = null;
         String value = "";
         try {
-            System.out.println("Toronto UDP Client Started........");
+            System.out.println("Toronto UDP CLIENT.Client Started........");
             aSocket = new DatagramSocket();
 //            TODO : SEND the correct message
             byte[] message = rawMessage.getBytes(); //message to be passed is stored in byte array
@@ -330,7 +331,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
             byte[] buffer = new byte[100000];//to store the received data, it will be populated by what receive method returns
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);//reply packet ready but not populated.
 
-            //Client waits until the reply is received-----------------------------------------------------------------------
+            //CLIENT.Client waits until the reply is received-----------------------------------------------------------------------
             aSocket.receive(reply);//reply received and will populate reply packet now.
             System.out.println("Reply received from the server is: " + new String(reply.getData()));//print reply message after converting it to a string from bytes
             value = new String(reply.getData()).trim();

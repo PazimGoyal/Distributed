@@ -1,7 +1,5 @@
 import java.io.*;
 
-import sun.rmi.runtime.Log;
-
 import java.io.FileWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -158,6 +156,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         String reply = "";
 
         boolean exists = hashMap.containsKey(eventType);
+        if(checkEventCity(eventID)){
         if (exists) {
             temp = hashMap.get(eventType);
             if (temp.containsKey(eventID)) {
@@ -181,7 +180,9 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             reply = "NO SUCH EVENT TYPE FOUND";
             LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
 
-        }
+        }}else{
+        reply="MANAGER CANNOT REMOVE EVENT FROM ANOTHER CITY";
+    }
         return reply.trim();
 
     }
@@ -189,7 +190,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
     public String listEventAvailability(String eventType) throws RemoteException {
 
         HashMap<String, Integer> temp;
-        String reply = eventType;
+        String reply = "MONTREAL SERVER "+ eventType;
         boolean exists = hashMap.containsKey(eventType);
         if (exists) {
             temp = hashMap.get(eventType);
@@ -219,7 +220,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
     public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
 
         HashMap<String, Integer> temp;
-        String reply = eventType;
+        String reply = "MONTREAL SERVER "+ eventType;
         boolean exists = hashMap.containsKey(eventType);
         if (exists) {
             temp = hashMap.get(eventType);
@@ -329,7 +330,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         DatagramSocket aSocket = null;
         String value = "";
         try {
-            System.out.println("Montreal UDP Client Started........");
+            System.out.println("Montreal UDP CLIENT.Client Started........");
             aSocket = new DatagramSocket();
             byte[] message = rawMessage.getBytes(); //message to be passed is stored in byte array
             InetAddress aHost = InetAddress.getByName("localhost"); //Host name is specified and the IP address of server host is calculated using DNS.
@@ -339,7 +340,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
             System.out.println("Request message sent from the client is : " + new String(request.getData()));
             byte[] buffer = new byte[100000];//to store the received data, it will be populated by what receive method returns
             DatagramPacket reply = new DatagramPacket(buffer, buffer.length);//reply packet ready but not populated.
-            //Client waits until the reply is received-----------------------------------------------------------------------
+            //CLIENT.Client waits until the reply is received-----------------------------------------------------------------------
             aSocket.receive(reply);//reply received and will populate reply packet now.
             System.out.println("Reply received from the server is: " + new String(reply.getData()));//print reply message after converting it to a string from bytes
             value = new String(reply.getData()).trim();
