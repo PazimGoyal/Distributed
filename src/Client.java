@@ -1,3 +1,5 @@
+import sun.rmi.runtime.Log;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,10 +33,12 @@ public class Client {
                 System.out.println("Enter 1 to enter id or 2 to exit");
                 String opt = obj.nextLine();
                 if (opt.equals("1") || opt == "1") {
+
                     System.out.println("Enter ID");
                     id = obj.nextLine().toUpperCase();
                     String[] vals = split(id);
                     interFace = gettype(vals[0]);
+
                     if (vals[1] == "M" || vals[1].equals("M")) {
                         idTaken = false;
                         System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event Availability \n4. Book Event\n5.Cancel Event \n6.Get Booking Schedule");
@@ -63,12 +67,14 @@ public class Client {
         try {
             switch (ans) {
                 case 1:
+
                     type = getType();
                     uniqueid = getEventID();
                     booking = getBooking();
-
+                    LogData("Manager trying to add event",id);
                     String reply = interFace.addEvent(uniqueid, type, booking).trim();
                     System.out.println(reply);
+                    LogData("GOT REPLY",id);
                     break;
 
                 case 2:
@@ -98,7 +104,7 @@ public class Client {
                         id = getCustomerID();
                     type = getType();
                     uniqueid = getEventID();
-                    LogData("ForCustomer" + id, id);
+                    LogData("ForCustomer" + id+"CUSTUMER TRYING TO BOOK EVENT", id);
 
                     if (id.substring(0, 3).equals(uniqueid.substring(0, 3))) {
                         temp = 0;
@@ -126,6 +132,7 @@ public class Client {
                     if (temp < 3) {
                         reply = interFace.bookEvent(id, uniqueid, type).trim();
                         if (reply.equals("Successfully Booked")) {
+                            LogData("Successfull Event BOOKED",id);
                             if (hashMap.containsKey(id)) {
                                 hashMap.get(id).add(type + "||" + uniqueid);
                             } else {
@@ -136,6 +143,7 @@ public class Client {
                         }
                         System.out.println(reply);
                     } else {
+                        LogData("CANNOT BOOK EVENT AS ALREADY HAVE MORE THEN # EVENTS PER MONTH",id);
                         System.out.println("CUSTOMER HAVE MORE THEN THREE BOOKINGS FOR THAT MONTH");
                     }
                     break;
@@ -146,9 +154,13 @@ public class Client {
                     uniqueid = getEventID();
                     reply = interFace.cancelEvent(id, uniqueid, type).trim();
                     if (reply.equals("Event Canceled Successfully")) {
+                        LogData("SUCCESS",id);
+
+
                         hashMap.get(id).remove(type + "||" + uniqueid);
                     }
                     System.out.println(reply);
+                    LogData("GOT REPLY"+reply,id);
 
 
                     break;
@@ -156,6 +168,7 @@ public class Client {
                     if (!idTaken)
                         id = getCustomerID();
                     reply = interFace.getBookingSchedule(id).trim();
+                    LogData(reply,id);
      reply.replaceAll("SEMINAR\\|\\|"," ").replaceAll("TRADE SHOW\\|\\|"," ").replaceAll("CONFRENCE\\|\\|"," ");
                     System.out.println(reply);
                     break;
@@ -166,6 +179,7 @@ public class Client {
             }
         } catch (Exception e) {
             System.out.println("Error");
+            LogData("ERROR",id);
         }
     }
 
