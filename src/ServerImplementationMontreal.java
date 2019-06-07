@@ -176,7 +176,7 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
 
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
-            LogData("NO SUCH EVENT TYPE FOUND : for "+ eventType+"\n");
+            LogData("NO EVENT TYPE FOUND : for "+ eventType+"\n");
 
         }
         return reply;
@@ -194,8 +194,12 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
                 if (temp.containsKey(eventID)) {
                     temp.remove(eventID);
                     temp.put(eventID, bookingCapacity);
+                    LogData("Add Event (Updated): Event :" + eventID + " of Event Type :"+eventType+" added and booking capacity updated to "+ bookingCapacity+"\n");
+
+
                 } else {
                     temp.put(eventID, bookingCapacity);
+                    LogData("Add Event (NEW): Event :" + eventID + " of Event Type :"+eventType+" added and booking capacity is "+ bookingCapacity+"\n");
 
                 }
 
@@ -204,14 +208,15 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
                 temp = new HashMap<>();
                 temp.put(eventID, bookingCapacity);
                 hashMap.put(eventType, temp);
+                LogData("Add Event (NEW): Event :" + eventID + " of Event Type :"+eventType+" added and booking capacity is "+ bookingCapacity+"\n");
+
             }
 
             return "SUCCESSFULL";
 
         } else {
-
+            LogData("Add Event : MANAGER CANNOT ADD EVENT OF ANOTHER CITY \n");
             return "MANAGER CANNOT ADD EVENT OF ANOTHER CITY";
-
         }
     }
 
@@ -224,17 +229,27 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
     public String getBookingSchedule(String customerId) throws RemoteException {
         String reply = "";
         if (customerBooking.containsKey(customerId)) {
+
             reply = customerBooking.get(customerId).toString();
+            LogData("Get Booking Schedule : for Customer"+ customerId +"is: "+reply+" \n");
+
         } else {
+            LogData("Get Booking Schedule : NO SUCH CUSTOMER FOUND \n");
             reply = "NO SUCH CUSTOMER FOUND";
         }
 //        Ottawa
+        LogData("Get Booking Schedule : Fetching Data from Ottawa server \n");
+
         String value = "getBookingSchedule:" + customerId;
         reply = reply + "\n" + sendEventToCorrectServer(value, 8085);
+        LogData("Get Booking Schedule : Fetching Data from Ottawa server : The Value is : "+reply+" \n");
+
 //        Toronto
+        LogData("Get Booking Schedule : Fetching Data from Toronto server \n");
+
         String value1 = "getBookingSchedule:" + customerId;
         reply = reply + "\n" + sendEventToCorrectServer(value1, 8086);
-
+        LogData("Get Booking Schedule : Fetching Data from Toronto server : The Value is : "+reply+" \n");
 
         return reply;
     }
@@ -248,8 +263,11 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         String reply = "";
         if (customerBooking.containsKey(customerId)) {
             reply = customerBooking.get(customerId).toString();
+            LogData("Get Booking Schedule : for Customer"+ customerId +"is: "+reply+" \n");
+
         } else {
             reply = "NO SUCH CUSTOMER FOUND";
+            LogData("Get Booking Schedule : NO SUCH CUSTOMER FOUND \n");
         }
         return reply;
     }
