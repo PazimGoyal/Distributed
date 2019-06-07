@@ -27,10 +27,11 @@ public class TorontoServer {
         String val = "";
         try {
             aSocket = new DatagramSocket(portNumber);
-            byte[] buffer = new byte[10000];// to stored the received data from
+            byte[] buffer = new byte[100000];// to stored the received data from
             // the client.
             System.out.println("Toronto UDP Server Started on 8086............");
             while (true) {
+                buffer=new byte[100000];
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 
                 aSocket.receive(request);

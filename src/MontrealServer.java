@@ -32,6 +32,7 @@ public class MontrealServer {
             // the client.
             System.out.println("Montreal UDP Server Started............");
             while (true) {
+                buffer=new byte[100000];
                 DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 
                 aSocket.receive(request);
