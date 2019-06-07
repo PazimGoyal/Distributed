@@ -68,7 +68,15 @@ public class Client {
                 type = getType();
                 uniqueid = getEventID();
                 reply = interFace.removeEvent(uniqueid, type);
-                System.out.println(interFace.getHashMap());
+                if(reply.trim().equals("EVENT ID REMOVED SUCCESSFULLY")){
+                    for(int i=0;i<hashMap.size();i++){
+                        HashSet<String> tempHash=hashMap.get(i);
+                        if(tempHash.contains(type+"||"+uniqueid)){
+                            tempHash.remove(type+"||"+uniqueid);
+                        }
+                    }
+
+                }
                 System.out.println(reply);
                 break;
 
