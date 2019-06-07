@@ -1,4 +1,9 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Client {
@@ -78,6 +83,8 @@ public class Client {
                     id = getCustomerID();
                 type = getType();
                 uniqueid = getEventID();
+                LogData("ForCustomer"+id,id);
+
                 boolean canI=false;
                 if(id.substring(0,3).equals(uniqueid.substring(0,3)))
                     canI=true;
@@ -320,6 +327,24 @@ else
 
 
 
+    public static void LogData(String value,String name) {
+        Date date = new Date(); // this object contains the current date value
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        File log = new File(name+".txt");
+        try{
+            if(!log.exists()){
+                System.out.println("We had to make a new file.");
+                log.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(log, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(date+" : "+ value + "\n");
+            bufferedWriter.close();
+        } catch(IOException e) {
+            System.out.println("COULD NOT LOG!!");
+        }
+
+    }
 
 
 }

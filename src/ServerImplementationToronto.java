@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -5,6 +8,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -13,6 +18,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
     public static HashMap<String, HashMap<String, Integer>> hashMap = new HashMap<>();
     public static HashMap<String, HashSet<String>> customerBooking = new HashMap<>();
     static String name = "TOR";
+    FileWriter fileWriter;
 
     public ServerImplementationToronto() throws RemoteException {
 
@@ -29,7 +35,6 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         hashMap.get("TRADE SHOW").put("TORM121219", 5);
         customerBooking.put("TORC1234", new HashSet<>());
         customerBooking.get("TORC1234").add("SEMINAR||TORA123412");
-
     }
 
 public String cancelEvent(String customerID,String eventID,String eventType)throws RemoteException{
@@ -53,8 +58,9 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
 
         return reply;
 }
-    public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
+   synchronized public String bookEvent(String customerID, String eventID, String eventType) throws RemoteException {
         String reply = "";
+        LogData("BOOK EVENT CALLED by :" +customerID);
         System.out.println(customerBooking);
         String[] EventIdArray = (eventID.split("(?<=\\G...)"));
         String EventCityCode = EventIdArray[0];
@@ -89,7 +95,7 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
             }
             System.out.println("---->" + customerBooking);
 
-            return reply;
+            return reply.trim();
         } else {
             if (EventCityCode.equals("MTL")) {
                 String value = "bookEvent:" + customerID + ":" + eventID + ":" + eventType;
@@ -100,10 +106,10 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
                 reply = sendEventToCorrectServer(value, 8085);
             }
         }
-        return reply;
+        return reply.trim();
     }
 
-    public String removeEvent(String eventID, String eventType) throws RemoteException {
+synchronized     public String removeEvent(String eventID, String eventType) throws RemoteException {
         HashMap<String, Integer> temp;
         String reply = "";
 
@@ -112,6 +118,14 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
             temp = hashMap.get(eventType);
             if (temp.containsKey(eventID)) {
                 temp.remove(eventID);
+                for(int i=0;i<customerBooking.size();i++){
+                    HashSet<String> tempHash=customerBooking.get(i);
+                    if(tempHash.contains(eventType+"||"+eventID)){
+                        tempHash.remove(eventType+"||"+eventID);
+                    }
+                }
+
+
                 reply = "EVENT ID REMOVED SUCCESSFULLY";
             } else {
                 reply = "No SUCH EVENT ID FOUND";
@@ -120,11 +134,11 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         } else {
             reply = "NO SUCH EVENT TYPE FOUND";
         }
-        return reply;
+        return reply.trim();
 
     }
 
-    public String listEventAvailability(String eventType) throws RemoteException {
+synchronized     public String listEventAvailability(String eventType) throws RemoteException {
 
         HashMap<String, Integer> temp;
         String reply = eventType;
@@ -140,10 +154,10 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         String value1 = "listEventAvailability:" + eventType;
         reply = reply + "\n" + sendEventToCorrectServer(value1, 8085);
 
-        return reply;
+        return reply.trim();
     }
 
-    public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
+ synchronized    public String listEventAvailabilityServerCall(String eventType) throws RemoteException {
         HashMap<String, Integer> temp;
         String reply = eventType;
         boolean exists = hashMap.containsKey(eventType);
@@ -156,7 +170,7 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         return reply;
     }
 
-    public String addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
+synchronized     public String addEvent(String eventID, String eventType, int bookingCapacity) throws RemoteException {
         if (checkEventCity(eventID)) {
             boolean exists = hashMap.containsKey(eventType);
             HashMap<String, Integer> temp;
@@ -187,12 +201,12 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
     }
 
     @Override
-    public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
+synchronized     public HashMap<String, HashMap<String, Integer>> getHashMap() throws RemoteException {
         System.out.println(hashMap);
         return hashMap;
     }
 
-    public String getBookingSchedule(String customerId) throws RemoteException {
+synchronized     public String getBookingSchedule(String customerId) throws RemoteException {
         String reply = "";
         if (customerBooking.containsKey(customerId)) {
             reply = customerBooking.get(customerId).toString();
@@ -267,5 +281,25 @@ public String cancelEvent(String customerID,String eventID,String eventType)thro
         } else
             return false;
     }
+
+    public void LogData(String value) {
+        Date date = new Date(); // this object contains the current date value
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        File log = new File("TorontoLog.txt");
+        try{
+            if(!log.exists()){
+                System.out.println("We had to make a new file.");
+                log.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(log, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(date+" : "+ value + "\n");
+            bufferedWriter.close();
+        } catch(IOException e) {
+            System.out.println("COULD NOT LOG!!");
+        }
+
+    }
+
 
 }
