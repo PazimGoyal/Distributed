@@ -69,7 +69,6 @@ public class Client {
 
                     String reply = interFace.addEvent(uniqueid, type, booking).trim();
                     System.out.println(reply);
-                    System.out.println(interFace.getHashMap());
                     break;
 
                 case 2:
@@ -261,7 +260,6 @@ public class Client {
         if (idCheck(id)) {
             vals[0] = id.substring(0, 3).toUpperCase();
             vals[1] = id.substring(3, 4).toUpperCase();
-            System.out.println(vals[1]);
             vals[2] = id.substring(4, 8);
         } else {
             System.out.println("Invalid Id");
