@@ -8,6 +8,7 @@ import java.net.SocketException;
 
 public class OttawaServer {
     static ServerImplementationOttawa exportedObj;
+
     public static void main(String args[]) {
         try {
             int PortNumber = 8081;
@@ -23,7 +24,7 @@ public class OttawaServer {
 
     private static void startUDPServer(int portNumber) {
         DatagramSocket aSocket = null;
-        String val="";
+        String val = "";
         try {
             aSocket = new DatagramSocket(portNumber);
             byte[] buffer = new byte[10000];// to stored the received data from
@@ -41,7 +42,7 @@ public class OttawaServer {
                     val = exportedObj.bookEvent(parameterToBePassed[1].trim(), parameterToBePassed[2].trim(), parameterToBePassed[3].trim());
                 } else if (parameterToBePassed[0].equals("listEventAvailability")) {
                     val = exportedObj.listEventAvailabilityServerCall(parameterToBePassed[1].trim());
-                } else if(parameterToBePassed[0].equals("getBookingSchedule")){
+                } else if (parameterToBePassed[0].equals("getBookingSchedule")) {
                     val = exportedObj.getBookingScheduleServerCall(parameterToBePassed[1].trim());
                 }
 

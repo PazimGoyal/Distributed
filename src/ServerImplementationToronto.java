@@ -31,6 +31,8 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         hashMap.get("CONFRENCE").put("TORA123412", 5);
         hashMap.get("CONFRENCE").put("TORA123412", 5);
         hashMap.get("SEMINAR").put("TORE999999", 5);
+        hashMap.get("SEMINAR").put("TORA060619", 2);
+
         hashMap.get("TRADE SHOW").put("TORE989898", 5);
         hashMap.get("TRADE SHOW").put("TORM121219", 5);
         customerBooking.put("TORC1234", new HashSet<>());
@@ -91,7 +93,7 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         String[] EventIdArray = (eventID.split("(?<=\\G...)"));
         String EventCityCode = EventIdArray[0];
         if (EventCityCode.equals("TOR")) {
-            if (customerBooking.containsKey(customerID) && (customerBooking.get(customerID).contains(eventID))) {
+            if (customerBooking.containsKey(customerID) && (customerBooking.get(customerID).contains(eventType + "||" + eventID))) {
                 reply = "Event Already Booked for Customer";
                 LogData("Event Already Booked : Event :" + eventID + " Already Booked for Customer " + customerID + "\n");
             } else {

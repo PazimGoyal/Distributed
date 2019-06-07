@@ -12,20 +12,27 @@ public class Client {
     static ManagerInterface MtlInterface;
     static ManagerInterface OtwInterface;
     static String id = "";
+
     static boolean idTaken = false;
     static Scanner obj;
     static ManagerInterface interFace;
 
     public static void main(String args[]) {
         obj = new Scanner(System.in);
+
         start();
+        try {
+            MultiThread();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         while (true) {
             try {
                 System.out.println("Enter 1 to enter id or 2 to exit");
                 String opt = obj.nextLine();
                 if (opt.equals("1") || opt == "1") {
                     System.out.println("Enter ID");
-                    id = obj.nextLine();
+                    id = obj.nextLine().toUpperCase();
                     String[] vals = split(id);
                     interFace = gettype(vals[0]);
                     if (vals[1] == "M" || vals[1].equals("M")) {
@@ -53,111 +60,110 @@ public class Client {
     public static void options(int ans) throws Exception {
         String type = "", uniqueid = "";
         int booking;
-        try{
-        switch (ans) {
-            case 1:
-                type = getType();
-                uniqueid = getEventID();
-                booking = getBooking();
-                String reply = interFace.addEvent(uniqueid, type, booking);
-                System.out.println(reply);
-                System.out.println(interFace.getHashMap());
-                break;
+        try {
+            switch (ans) {
+                case 1:
+                    type = getType();
+                    uniqueid = getEventID();
+                    booking = getBooking();
+                    String reply = interFace.addEvent(uniqueid, type, booking).trim();
+                    System.out.println(reply);
+                    System.out.println(interFace.getHashMap());
+                    break;
 
-            case 2:
-                type = getType();
-                uniqueid = getEventID();
-                reply = interFace.removeEvent(uniqueid, type);
-                if(reply.trim().equals("EVENT ID REMOVED SUCCESSFULLY")){
-                    for(int i=0;i<hashMap.size();i++){
-                        HashSet<String> tempHash=hashMap.get(i);
-                        if(tempHash.contains(type+"||"+uniqueid)){
-                            tempHash.remove(type+"||"+uniqueid);
+                case 2:
+                    type = getType();
+                    uniqueid = getEventID();
+                    reply = interFace.removeEvent(uniqueid, type).trim();
+                    if (reply.trim().equals("EVENT ID REMOVED SUCCESSFULLY")) {
+                        for (int i = 0; i < hashMap.size(); i++) {
+                            HashSet<String> tempHash = hashMap.get(i);
+                            if (tempHash.contains(type + "||" + uniqueid)) {
+                                tempHash.remove(type + "||" + uniqueid);
+                            }
                         }
+
                     }
+                    System.out.println(reply);
+                    break;
 
-                }
-                System.out.println(reply);
-                break;
+                case 3:
+                    type = getType();
+                    System.out.println(interFace.listEventAvailability(type).trim());
+                    break;
+                case 4:
+                    int temp = 0;
+                    System.out.println(hashMap);
+                    if (!idTaken)
+                        id = getCustomerID();
+                    type = getType();
+                    uniqueid = getEventID();
+                    LogData("ForCustomer" + id, id);
 
-            case 3:
-                type = getType();
-                System.out.println(interFace.listEventAvailability(type));
-                break;
-            case 4:
-                int temp=0;
-                System.out.println(hashMap);
-                if (!idTaken)
-                    id = getCustomerID();
-                type = getType();
-                uniqueid = getEventID();
-                LogData("ForCustomer"+id,id);
-
-                boolean canI=false;
-                if(id.substring(0,3).equals(uniqueid.substring(0,3)))
-                    canI=true;
-                else{
-
-                    if(hashMap.containsKey(id)){
-                        HashSet<String>  hashSet=hashMap.get(id);
-                        ArrayList<String> abc=new ArrayList(hashSet);
-                        for(int i=0;i<hashSet.size();i++){
-                          String eid=  abc.get(i);
-                          if(!id.substring(0,3).equals(eid.split("\\|\\|")[1].substring(0,3)))
-                          {
-                            if(  uniqueid.substring(6,8).equals(eid.substring(6,8)))
-                                temp++;
-                          }
-                        }
-                    }
-
-                    else {canI=true;
-                    temp=0;}
-                }
-
-
-
-                if(canI && temp<3){
-                reply = interFace.bookEvent(id, uniqueid, type);
-                if (reply.equals("Successfully Booked")) {
-                    if (hashMap.containsKey(id)) {
-                        hashMap.get(id).add(type + "||" + uniqueid);
+                    if (id.substring(0, 3).equals(uniqueid.substring(0, 3))) {
+                        temp = 0;
                     } else {
-                        HashSet<String> hashSet = new HashSet<>();
-                        hashSet.add(type + "||" + uniqueid);
-                        hashMap.put(id, hashSet);
+
+                        if (hashMap.containsKey(id)) {
+                            HashSet<String> hashSet = hashMap.get(id);
+                            ArrayList<String> abc = new ArrayList(hashSet);
+                            for (int i = 0; i < hashSet.size(); i++) {
+                                String eid = abc.get(i);
+                                String sub = eid.split("\\|\\|")[1].substring(0, 3);
+                                if (!id.substring(0, 3).equals(sub)) {
+                                    String usub = uniqueid.substring(6, 8);
+                                    String eidsub = eid.split("\\|\\|")[1].substring(6, 8);
+                                    if (usub.equals(eidsub))
+                                        temp++;
+                                }
+                            }
+                        } else {
+                            temp = 0;
+                        }
                     }
-                }
-                System.out.println(reply);
-                }else{
-                    System.out.println("CUSTOMER HAVE MORE THEN THREE BOOKINGS FOR THAT MONTH");
-                }
-                break;
-            case 5:
-                if (!idTaken)
-                    id = getCustomerID();
-                type = getType();
-                uniqueid = getEventID();
-                reply = interFace.cancelEvent(id, uniqueid, type);
-                if (reply.equals("Event Canceled Successfully")) {
-                    hashMap.get(id).remove(type + "||" + uniqueid);
-                }
-                System.out.println(reply);
 
 
-                break;
-            case 6:
-                if (!idTaken)
-                    id = getCustomerID();
-                reply = interFace.getBookingSchedule(id);
-                System.out.println(reply);
-                break;
+                    if (temp < 3) {
+                        reply = interFace.bookEvent(id, uniqueid, type).trim();
+                        if (reply.equals("Successfully Booked")) {
+                            if (hashMap.containsKey(id)) {
+                                hashMap.get(id).add(type + "||" + uniqueid);
+                            } else {
+                                HashSet<String> hashSet = new HashSet<>();
+                                hashSet.add(type + "||" + uniqueid);
+                                hashMap.put(id, hashSet);
+                            }
+                        }
+                        System.out.println(reply);
+                    } else {
+                        System.out.println("CUSTOMER HAVE MORE THEN THREE BOOKINGS FOR THAT MONTH");
+                    }
+                    break;
+                case 5:
+                    if (!idTaken)
+                        id = getCustomerID();
+                    type = getType();
+                    uniqueid = getEventID();
+                    reply = interFace.cancelEvent(id, uniqueid, type).trim();
+                    if (reply.equals("Event Canceled Successfully")) {
+                        hashMap.get(id).remove(type + "||" + uniqueid);
+                    }
+                    System.out.println(reply);
 
-            default:
-                break;
 
-        }
-        }catch (Exception e){
+                    break;
+                case 6:
+                    if (!idTaken)
+                        id = getCustomerID();
+                    reply = interFace.getBookingSchedule(id).trim();
+                    System.out.println(reply);
+                    break;
+
+                default:
+                    break;
+
+            }
+        } catch (Exception e) {
             System.out.println("Error");
         }
     }
@@ -185,10 +191,9 @@ public class Client {
         System.out.println("ENTER EVENT ID e.g MTLA100919 :- ");
         obj.nextLine();
         uniqueid = obj.nextLine();
-        if(eventIdCheck(uniqueid))
-           return uniqueid.toUpperCase();
-else
-        {
+        if (eventIdCheck(uniqueid))
+            return uniqueid.toUpperCase();
+        else {
             System.out.println("INVALID EVENT ID TRY AGAIN");
             getEventID();
         }
@@ -201,10 +206,9 @@ else
         System.out.println("ENTER CUSTOMER ID e.g MTLC1234 :- ");
         obj.nextLine();
         uniqueid = obj.nextLine();
-        if(idCheck(uniqueid))
-            return uniqueid;
-        else
-        {
+        if (idCheck(uniqueid))
+            return uniqueid.toUpperCase();
+        else {
             System.out.println("INVALID ID TRY AGAIN");
             getCustomerID();
         }
@@ -263,59 +267,63 @@ else
 
     }
 
-    public static boolean idCheck(String id){
-        boolean ans=false;
+    public static boolean idCheck(String id) {
+        boolean ans = false;
         try {
             String city = id.substring(0, 3).toUpperCase().trim();
             String mc = id.substring(3, 4).trim().toUpperCase();
             String uid = id.substring(4).trim();
-            if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
-                ans=true;
-            else {ans=false;
-            return ans;}
-            if (mc.equals("M")||mc.equals("C"))
-                ans=true;
-            else{
+            if (city.equals("TOR") || city.equals("MTL") || city.equals("OTW"))
+                ans = true;
+            else {
+                ans = false;
+                return ans;
+            }
+            if (mc.equals("M") || mc.equals("C"))
+                ans = true;
+            else {
                 return false;
             }
-            if(uid.length()>4||uid.length()<4)
+            if (uid.length() > 4 || uid.length() < 4)
                 return false;
             else
-                ans=true;
-            int a=Integer.parseInt(uid);
+                ans = true;
+            int a = Integer.parseInt(uid);
 
-        }catch (Exception e){
-            ans=false;
+        } catch (Exception e) {
+            ans = false;
         }
         return ans;
     }
-    public static boolean eventIdCheck(String id){
-        boolean ans=false;
+
+    public static boolean eventIdCheck(String id) {
+        boolean ans = false;
         try {
             String city = id.substring(0, 3).toUpperCase().trim();
             String mc = id.substring(3, 4).trim().toUpperCase();
             String uid = id.substring(4).trim();
-            if(city.equals("TOR")||city.equals("MTL")||city.equals("OTW"))
-                ans=true;
-            else {ans=false;
-                return ans;}
-            if (mc.equals("M")||mc.equals("E")||mc.equals("A"))
-                ans=true;
-            else{
+            if (city.equals("TOR") || city.equals("MTL") || city.equals("OTW"))
+                ans = true;
+            else {
+                ans = false;
+                return ans;
+            }
+            if (mc.equals("M") || mc.equals("E") || mc.equals("A"))
+                ans = true;
+            else {
                 return false;
             }
-            if(uid.length()>6||uid.length()<6)
+            if (uid.length() > 6 || uid.length() < 6)
                 return false;
             else
-                ans=true;
-            int a=Integer.parseInt(uid);
+                ans = true;
+            int a = Integer.parseInt(uid);
 
-        }catch (Exception e){
-            ans=false;
+        } catch (Exception e) {
+            ans = false;
         }
         return ans;
     }
-
 
 
     public static void start() {
@@ -334,25 +342,87 @@ else
     }
 
 
-
-    public static void LogData(String value,String name) {
+    public static void LogData(String value, String name) {
         Date date = new Date(); // this object contains the current date value
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        File log = new File(name+".txt");
-        try{
-            if(!log.exists()){
+        File log = new File(name + ".txt");
+        try {
+            if (!log.exists()) {
                 System.out.println("We had to make a new file.");
                 log.createNewFile();
             }
             FileWriter fileWriter = new FileWriter(log, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(date+" : "+ value + "\n");
+            bufferedWriter.write(date + " : " + value + "\n");
             bufferedWriter.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("COULD NOT LOG!!");
         }
 
     }
 
+    public static void MultiThread() throws Exception {
+        try {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(TorInterface.bookEvent("TORC1000", "TORA060619", "SEMINAR"));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Thread thread2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(MtlInterface.bookEvent("MTLC1000", "TORA060619", "SEMINAR"));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Thread thread3 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(TorInterface.bookEvent("TORC1001", "TORA060619", "SEMINAR"));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Thread thread4 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(OtwInterface.bookEvent("OTWC1000", "TORA060619", "SEMINAR"));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            Thread thread5 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(MtlInterface.bookEvent("MTLC1000", "TORA060619", "SEMINAR"));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+            thread2.start();
+            thread3.start();
+            thread4.start();
+            thread5.start();
+
+
+        } catch (Exception e) {
+        }
+    }
 
 }

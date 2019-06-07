@@ -19,7 +19,7 @@ public interface ManagerInterface extends Remote {
 
     public String getBookingSchedule(String customerID) throws RemoteException;
 
-    public String cancelEvent(String customerID,String eventID,String eventType) throws RemoteException;
+    public String cancelEvent(String customerID, String eventID, String eventType) throws RemoteException;
 
 }
 
