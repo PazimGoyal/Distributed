@@ -149,29 +149,29 @@ public class ServerImplementationToronto extends UnicastRemoteObject implements 
         String reply = "";
         boolean exists = hashMap.containsKey(eventType);
         if(checkEventCity(eventID)){
-        if (exists) {
-            temp = hashMap.get(eventType);
-            if (temp.containsKey(eventID)) {
-                temp.remove(eventID);
-                for (int i = 0; i < customerBooking.size(); i++) {
-                    HashSet<String> tempHash = customerBooking.get(i);
-                    if (tempHash.contains(eventType + "||" + eventID)) {
-                        tempHash.remove(eventType + "||" + eventID);
+            if (exists) {
+                temp = hashMap.get(eventType);
+                if (temp.containsKey(eventID)) {
+                    temp.remove(eventID);
+                    for (int i = 0; i < customerBooking.size(); i++) {
+                        HashSet<String> tempHash = customerBooking.get(i);
+                        if (tempHash.contains(eventType + "||" + eventID)) {
+                            tempHash.remove(eventType + "||" + eventID);
+                        }
                     }
+                    reply = "EVENT ID REMOVED SUCCESSFULLY";
+                    LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType + "\n");
+
+                } else {
+                    reply = "No SUCH EVENT ID FOUND";
+                    LogData("No SUCH EVENT ID FOUND : Event :" + eventID + " Event Type: " + eventType + ", event id not found \n");
                 }
-                reply = "EVENT ID REMOVED SUCCESSFULLY";
-                LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType + "\n");
 
             } else {
-                reply = "No SUCH EVENT ID FOUND";
-                LogData("No SUCH EVENT ID FOUND : Event :" + eventID + " Event Type: " + eventType + ", event id not found \n");
+                reply = "NO SUCH EVENT TYPE FOUND";
+                LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
+
             }
-
-        } else {
-            reply = "NO SUCH EVENT TYPE FOUND";
-            LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
-
-        }
         } else {
 
             reply = "Manager CANNOT REMOVE EVENT FROM ANOTHER CITY";

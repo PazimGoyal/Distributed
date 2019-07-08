@@ -27,11 +27,11 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
         hashMap.put("TRADE SHOW", new HashMap<>());
         hashMap.put("SEMINAR", new HashMap<>());
         hashMap.put("CONFRENCE", new HashMap<>());
-        hashMap.get("CONFRENCE").put("MTLA060519", 5);
-        hashMap.get("CONFRENCE").put("MTLA050619", 5);
-        hashMap.get("SEMINAR").put("MTLE190519", 5);
-        hashMap.get("TRADE SHOW").put("MTLE191219", 5);
-        hashMap.get("TRADE SHOW").put("MTLM121220", 5);
+        hashMap.get("CONFRENCE").put("MTLA123412", 5);
+        hashMap.get("CONFRENCE").put("MTLA123412", 5);
+        hashMap.get("SEMINAR").put("MTLE999999", 5);
+        hashMap.get("TRADE SHOW").put("MTLE989898", 5);
+        hashMap.get("TRADE SHOW").put("MTLM121219", 5);
         customerBooking.put("MTLC1234", new HashSet<>());
         customerBooking.get("MTLC1234").add("MTLA123412");
         customerBooking.put("TORC1234", new HashSet<>());
@@ -157,32 +157,32 @@ public class ServerImplementationMontreal extends UnicastRemoteObject implements
 
         boolean exists = hashMap.containsKey(eventType);
         if(checkEventCity(eventID)){
-        if (exists) {
-            temp = hashMap.get(eventType);
-            if (temp.containsKey(eventID)) {
-                temp.remove(eventID);
-                for (int i = 0; i < customerBooking.size(); i++) {
-                    HashSet<String> tempHash = customerBooking.get(i);
-                    if (tempHash.contains(eventType + "||" + eventID)) {
-                        tempHash.remove(eventType + "||" + eventID);
+            if (exists) {
+                temp = hashMap.get(eventType);
+                if (temp.containsKey(eventID)) {
+                    temp.remove(eventID);
+                    for (int i = 0; i < customerBooking.size(); i++) {
+                        HashSet<String> tempHash = customerBooking.get(i);
+                        if (tempHash.contains(eventType + "||" + eventID)) {
+                            tempHash.remove(eventType + "||" + eventID);
+                        }
                     }
+
+
+                    reply = "EVENT ID REMOVED SUCCESSFULLY";
+                    LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType + "\n");
+                } else {
+                    reply = "No SUCH EVENT ID FOUND";
+                    LogData("No SUCH EVENT ID FOUND : Event :" + eventID + " Event Type: " + eventType + ", event id not found \n");
                 }
 
-
-                reply = "EVENT ID REMOVED SUCCESSFULLY";
-                LogData("EVENT ID REMOVED SUCCESSFULLY : Event :" + eventID + " Event Type: " + eventType + "\n");
             } else {
-                reply = "No SUCH EVENT ID FOUND";
-                LogData("No SUCH EVENT ID FOUND : Event :" + eventID + " Event Type: " + eventType + ", event id not found \n");
-            }
+                reply = "NO SUCH EVENT TYPE FOUND";
+                LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
 
-        } else {
-            reply = "NO SUCH EVENT TYPE FOUND";
-            LogData("NO SUCH EVENT TYPE FOUND: Event :" + eventID + " Event Type: " + eventType + " ,event type not found \n");
-
-        }}else{
-        reply="MANAGER CANNOT REMOVE EVENT FROM ANOTHER CITY";
-    }
+            }}else{
+            reply="MANAGER CANNOT REMOVE EVENT FROM ANOTHER CITY";
+        }
         return reply.trim();
 
     }

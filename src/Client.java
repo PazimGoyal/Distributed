@@ -1,10 +1,9 @@
-import sun.rmi.runtime.Log;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.rmi.*;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -23,22 +22,21 @@ public class Client {
         obj = new Scanner(System.in);
 
         start();
-        /*try {
+       /* try {
             MultiThread();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        */while (true) {
+        }*/
+
+        while (true) {
             try {
                 System.out.println("Enter 1 to enter id or 2 to exit");
                 String opt = obj.nextLine();
                 if (opt.equals("1") || opt == "1") {
-
                     System.out.println("Enter ID");
                     id = obj.nextLine().toUpperCase();
                     String[] vals = split(id);
                     interFace = gettype(vals[0]);
-
                     if (vals[1] == "M" || vals[1].equals("M")) {
                         idTaken = false;
                         System.out.println("SELECT 1 to 6\n1. Add Event\n2. Remove Event\n3. List Event Availability \n4. Book Event\n5.Cancel Event \n6.Get Booking Schedule");
@@ -67,14 +65,12 @@ public class Client {
         try {
             switch (ans) {
                 case 1:
-
                     type = getType();
                     uniqueid = getEventID();
                     booking = getBooking();
-                    LogData("Manager trying to add event",id);
+
                     String reply = interFace.addEvent(uniqueid, type, booking).trim();
                     System.out.println(reply);
-                    LogData("GOT REPLY",id);
                     break;
 
                 case 2:
@@ -104,7 +100,7 @@ public class Client {
                         id = getCustomerID();
                     type = getType();
                     uniqueid = getEventID();
-                    LogData("ForCustomer" + id+"CUSTUMER TRYING TO BOOK EVENT", id);
+                    LogData("ForCustomer" + id, id);
 
                     if (id.substring(0, 3).equals(uniqueid.substring(0, 3))) {
                         temp = 0;
@@ -132,7 +128,6 @@ public class Client {
                     if (temp < 3) {
                         reply = interFace.bookEvent(id, uniqueid, type).trim();
                         if (reply.equals("Successfully Booked")) {
-                            LogData("Successfull Event BOOKED",id);
                             if (hashMap.containsKey(id)) {
                                 hashMap.get(id).add(type + "||" + uniqueid);
                             } else {
@@ -143,7 +138,6 @@ public class Client {
                         }
                         System.out.println(reply);
                     } else {
-                        LogData("CANNOT BOOK EVENT AS ALREADY HAVE MORE THEN # EVENTS PER MONTH",id);
                         System.out.println("CUSTOMER HAVE MORE THEN THREE BOOKINGS FOR THAT MONTH");
                     }
                     break;
@@ -154,13 +148,9 @@ public class Client {
                     uniqueid = getEventID();
                     reply = interFace.cancelEvent(id, uniqueid, type).trim();
                     if (reply.equals("Event Canceled Successfully")) {
-                        LogData("SUCCESS",id);
-
-
                         hashMap.get(id).remove(type + "||" + uniqueid);
                     }
                     System.out.println(reply);
-                    LogData("GOT REPLY"+reply,id);
 
 
                     break;
@@ -168,8 +158,7 @@ public class Client {
                     if (!idTaken)
                         id = getCustomerID();
                     reply = interFace.getBookingSchedule(id).trim();
-                    LogData(reply,id);
-     reply.replaceAll("SEMINAR\\|\\|"," ").replaceAll("TRADE SHOW\\|\\|"," ").replaceAll("CONFRENCE\\|\\|"," ");
+                    reply.replaceAll("SEMINAR\\|\\|", " ").replaceAll("TRADE SHOW\\|\\|", " ").replaceAll("CONFRENCE\\|\\|", " ");
                     System.out.println(reply);
                     break;
 
@@ -179,7 +168,6 @@ public class Client {
             }
         } catch (Exception e) {
             System.out.println("Error");
-            LogData("ERROR",id);
         }
     }
 
@@ -382,6 +370,9 @@ public class Client {
                 @Override
                 public void run() {
                     try {
+
+                        System.out.println("Thread 1");
+                        LogData("Thread 1", "threadLog");
                         System.out.println(TorInterface.bookEvent("TORC1000", "TORA060619", "SEMINAR"));
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -392,6 +383,8 @@ public class Client {
                 @Override
                 public void run() {
                     try {
+                        System.out.println("Thread 2");
+                        LogData("Thread 2", "threadLog");
                         System.out.println(MtlInterface.bookEvent("MTLC1000", "TORA060619", "SEMINAR"));
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -402,6 +395,8 @@ public class Client {
                 @Override
                 public void run() {
                     try {
+                        System.out.println("Thread 3");
+                        LogData("Thread 3", "threadLog");
                         System.out.println(TorInterface.bookEvent("TORC1001", "TORA060619", "SEMINAR"));
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -412,6 +407,8 @@ public class Client {
                 @Override
                 public void run() {
                     try {
+                        System.out.println("Thread 4");
+                        LogData("Thread 4", "threadLog");
                         System.out.println(OtwInterface.bookEvent("OTWC1000", "TORA060619", "SEMINAR"));
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -422,6 +419,8 @@ public class Client {
                 @Override
                 public void run() {
                     try {
+                        System.out.println("Thread 5");
+                        LogData("Thread 5", "threadLog");
                         System.out.println(MtlInterface.bookEvent("MTLC1000", "TORA060619", "SEMINAR"));
                     } catch (RemoteException e) {
                         e.printStackTrace();

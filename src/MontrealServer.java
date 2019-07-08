@@ -46,6 +46,8 @@ public class MontrealServer {
                     val = exportedObj.listEventAvailabilityServerCall(parameterToBePassed[1].trim());
                 } else if (parameterToBePassed[0].equals("getBookingSchedule")) {
                     val = exportedObj.getBookingScheduleServerCall(parameterToBePassed[1].trim());
+                }else if (parameterToBePassed[0].equals("cancelEvent")) {
+                    val = exportedObj.cancelEvent(parameterToBePassed[1].trim(), parameterToBePassed[2].trim(), parameterToBePassed[3].trim());
                 }
 
                 DatagramPacket reply = new DatagramPacket(val.getBytes(), val.length(), request.getAddress(),
